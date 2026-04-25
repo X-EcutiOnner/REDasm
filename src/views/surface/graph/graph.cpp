@@ -7,7 +7,7 @@ SurfaceGraph::SurfaceGraph(RDContext* ctx, QWidget* parent)
     this->setContextMenuPolicy(Qt::CustomContextMenu);
     this->setCornerWidget(utils::create_screenshot_button(this->viewport()));
 
-    m_surface = rd_surfacegraph_create(ctx, RD_RENDERER_GRAPH);
+    m_surface = rd_surfacegraph_create(ctx, RD_RF_GRAPH);
     m_popup = new SurfacePopup(ctx, this);
     m_menu = utils::create_surface_menu(this);
 
@@ -34,8 +34,8 @@ bool SurfaceGraph::has_selection() const {
     return rd_surfacegraph_has_selection(m_surface);
 }
 
-bool SurfaceGraph::has_rdil() const {
-    return rd_surfacegraph_has_rdil(m_surface);
+RDRenderMode SurfaceGraph::get_mode() const {
+    return rd_surfacegraph_get_mode(m_surface);
 }
 
 void SurfaceGraph::jump_to_ep() {
@@ -67,8 +67,8 @@ void SurfaceGraph::invalidate() {
     this->update_graph();
 }
 
-void SurfaceGraph::set_rdil(bool b) {
-    rd_surfacegraph_set_rdil(m_surface, b);
+void SurfaceGraph::set_mode(RDRenderMode m) {
+    rd_surfacegraph_set_mode(m_surface, m);
     this->invalidate();
 }
 
@@ -190,8 +190,6 @@ void SurfaceGraph::focusInEvent(QFocusEvent* e) {
         rd_surfacegraph_set_cursor_visible(m_surface, true);
         this->invalidate();
     }
-
-    statusbar::check_rdil();
 }
 
 void SurfaceGraph::focusOutEvent(QFocusEvent* e) {
@@ -201,8 +199,6 @@ void SurfaceGraph::focusOutEvent(QFocusEvent* e) {
         rd_surfacegraph_set_cursor_visible(m_surface, false);
         this->invalidate();
     }
-
-    statusbar::check_rdil();
 }
 
 bool SurfaceGraph::event(QEvent* event) {

@@ -47,13 +47,33 @@ QAction* SplitWidget::add_button(const QIcon& icon) {
 }
 
 QAction* SplitWidget::add_button(QAction* action) {
-
     if(m_actfirstdefault)
         m_tbactions->insertAction(m_actfirstdefault, action);
     else
         m_tbactions->addAction(action);
 
     return action;
+}
+
+QWidget* SplitWidget::add_widget(QWidget* w) {
+    w->setParent(m_tbactions);
+
+    if(m_actfirstdefault)
+        m_tbactions->insertWidget(m_actfirstdefault, w);
+    else
+        m_tbactions->addWidget(w);
+
+    return w;
+}
+
+void SplitWidget::add_spacer() {
+    auto* spacer = new QWidget(m_tbactions);
+    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    if(m_actfirstdefault)
+        m_tbactions->insertWidget(m_actfirstdefault, spacer);
+    else
+        m_tbactions->addWidget(spacer);
 }
 
 void SplitWidget::create_default_buttons() {

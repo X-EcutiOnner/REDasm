@@ -1,5 +1,4 @@
 #include "split.h"
-#include "statusbar.h"
 #include "support/actions.h"
 #include "support/fontawesome.h"
 #include "support/themeprovider.h"
@@ -7,6 +6,7 @@
 #include "views/split/widget.h"
 #include "views/surface/graph/graph.h"
 #include "views/surface/view.h"
+#include <QComboBox>
 
 namespace {
 
@@ -60,13 +60,19 @@ SurfaceGraph* _splitwidget_findsurfacegraph(SplitWidget* split) {
 SurfaceSplitDelegate::SurfaceSplitDelegate(RDContext* ctx, QObject* parent)
     : SplitDelegate{parent}, m_context{ctx} {}
 
-QWidget* SurfaceSplitDelegate::create_widget(SplitWidget* split,
-                                             SplitWidget* current) {
-    QAction* actback = split->add_button(
+QWidget* SurfaceSplitDelegate::create_widget(SplitWidget* current,
+                                             SplitWidget* split) {
+    QAction* actback = current->add_button(
         FA_ICON_COLOR(0xf053, themeprovider::color(RD_THEME_SUCCESS)));
-    QAction* actforward = split->add_button(
+    QAction* actforward = current->add_button(
         FA_ICON_COLOR(0xf054, themeprovider::color(RD_THEME_SUCCESS)));
-    split->add_button(actions::get(actions::GOTO));
+    current->add_button(actions::get(actions::GOTO));
+
+    auto* cbrendermode =
+        static_cast<QComboBox*>(current->add_widget(new QComboBox()));
+
+    cbrendermode->setFrame(false);
+    cbrendermode->addItems(QStringList{"NORMAL", "RDIL", "FLAGS"});
 
     auto* stack = new QStackedWidget();
     auto* surfaceview = new SurfaceView(m_context);
@@ -74,18 +80,27 @@ QWidget* SurfaceSplitDelegate::create_widget(SplitWidget* split,
     stack->addWidget(surfaceview);
     stack->addWidget(surfacegraph);
 
+    QObject::connect(cbrendermode, &QComboBox::currentIndexChanged, this,
+                     [current](int idx) {
+                         ISurface* s = _splitwidget_getcurrentsurface(current);
+                         if(s) {
+                             s->set_mode(static_cast<RDRenderMode>(idx));
+                             s->to_widget()->setFocus();
+                         }
+                     });
+
     // Initialize Actions
     actback->setEnabled(surfaceview->listing()->can_go_back());
     actforward->setEnabled(surfaceview->listing()->can_go_forward());
 
     // Sync view location
-    if(ISurface* v = _splitwidget_findsurfacelisting(current); v) {
+    if(ISurface* v = _splitwidget_findsurfacelisting(split); v) {
         auto address = v->get_current_address();
         if(address) surfaceview->listing()->jump_to(*address);
     }
 
     // Sync graph location
-    if(ISurface* g = _splitwidget_findsurfacegraph(current); g) {
+    if(ISurface* g = _splitwidget_findsurfacegraph(split); g) {
         auto address = g->get_current_address();
         if(address) surfacegraph->jump_to(*address);
     }
@@ -108,31 +123,34 @@ QWidget* SurfaceSplitDelegate::create_widget(SplitWidget* split,
             });
 
     connect(surfaceview, &SurfaceView::switch_view, this,
-            [stack, surfaceview, surfacegraph]() {
+            [stack, surfaceview, surfacegraph, cbrendermode]() {
                 auto address = surfaceview->listing()->get_current_address();
                 if(!address) return;
 
                 stack->setCurrentWidget(surfacegraph);
+                surfacegraph->set_mode(
+                    static_cast<RDRenderMode>(cbrendermode->currentIndex()));
                 surfacegraph->jump_to(*address);
-                statusbar::check_rdil();
             });
 
     connect(surfacegraph, &SurfaceGraph::switch_view, this,
-            [stack, surfaceview, surfacegraph]() {
+            [stack, surfaceview, surfacegraph, cbrendermode]() {
                 auto address = surfacegraph->get_current_address();
                 if(!address) return;
 
                 stack->setCurrentWidget(surfaceview);
+                surfaceview->listing()->set_mode(
+                    static_cast<RDRenderMode>(cbrendermode->currentIndex()));
                 surfaceview->listing()->jump_to(*address);
-                statusbar::check_rdil();
             });
 
-    connect(actback, &QAction::triggered, this, [split]() {
-        if(ISurface* s = _splitwidget_getcurrentsurface(split)) s->go_back();
+    connect(actback, &QAction::triggered, this, [current]() {
+        if(ISurface* s = _splitwidget_getcurrentsurface(current)) s->go_back();
     });
 
-    connect(actforward, &QAction::triggered, this, [split]() {
-        if(ISurface* s = _splitwidget_getcurrentsurface(split)) s->go_forward();
+    connect(actforward, &QAction::triggered, this, [current]() {
+        if(ISurface* s = _splitwidget_getcurrentsurface(current))
+            s->go_forward();
     });
 
     return stack;

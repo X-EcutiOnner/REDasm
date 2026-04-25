@@ -17,6 +17,8 @@ public:
     [[nodiscard]] QWidget* widget() const { return m_widget; }
     QAction* add_button(const QIcon& icon);
     QAction* add_button(QAction* action);
+    QWidget* add_widget(QWidget* w);
+    void add_spacer();
 
 public Q_SLOTS:
     void split_horizontally();
@@ -37,7 +39,7 @@ private:
 
 private:
     SplitView* m_view;
-    QWidget* m_widget;
+    QWidget* m_widget{nullptr};
     QAction *m_actfirstdefault{nullptr}, *m_actclose{nullptr};
     QToolBar* m_tbactions;
 

@@ -11,13 +11,13 @@ public:
     virtual void clear_history() = 0;
     virtual void jump_to_ep() = 0;
     virtual void jump_to(RDAddress address) = 0;
-    virtual void set_rdil(bool b) = 0;
+    virtual void set_mode(RDRenderMode m) = 0;
     virtual void invalidate() = 0;
     virtual bool go_back() = 0;
     virtual bool go_forward() = 0;
     virtual void set_position(int row, int col) = 0;
     virtual void select(int row, int col) = 0;
-    [[nodiscard]] virtual bool has_rdil() const = 0;
+    [[nodiscard]] virtual RDRenderMode get_mode() const = 0;
     [[nodiscard]] virtual bool has_selection() const = 0;
     [[nodiscard]] virtual bool can_go_back() const = 0;
     [[nodiscard]] virtual bool can_go_forward() const = 0;

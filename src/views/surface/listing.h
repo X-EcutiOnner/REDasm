@@ -25,10 +25,10 @@ public:
     [[nodiscard]] bool can_go_back() const override;
     [[nodiscard]] bool can_go_forward() const override;
     [[nodiscard]] bool has_selection() const override;
-    [[nodiscard]] bool has_rdil() const override;
+    [[nodiscard]] RDRenderMode get_mode() const override;
     [[nodiscard]] int visible_columns() const;
     [[nodiscard]] int visible_rows() const;
-    void set_rdil(bool v) override;
+    void set_mode(RDRenderMode m) override;
     void set_position(int row, int col) override;
     void select(int row, int col) override;
     // clang-format on

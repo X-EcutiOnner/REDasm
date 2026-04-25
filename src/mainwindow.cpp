@@ -41,9 +41,6 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow{parent}, m_ui{this} {
         statusbar::create_status_label(new QLabel(this)), 60);
 
     m_ui.statusbar->addPermanentWidget(
-        statusbar::create_rdil_toggle_button(m_ui.statusbar->height(), this));
-
-    m_ui.statusbar->addPermanentWidget(
         statusbar::create_problems_button(m_ui.statusbar->height(), this));
 
     m_ui.statusbar->addPermanentWidget(
@@ -218,7 +215,6 @@ void MainWindow::show_context_view(RDContext* ctx) {
 
     this->replace_view(new ContextView(ctx));
     this->enable_context_actions(true);
-    statusbar::check_rdil();
 }
 
 void MainWindow::update_menubar() {

@@ -1,5 +1,4 @@
 #include "statusbar.h"
-#include "mainwindow.h"
 #include "support/fontawesome.h"
 #include "support/themeprovider.h"
 #include "support/utils.h"
@@ -9,13 +8,9 @@ namespace statusbar {
 
 namespace {
 
-const QString LISTING_MODE_TEXT = "Listing";
-const QString RDIL_MODE_TEXT = "RDIL";
-
 QLabel* g_lblstatuslabel;
 QPushButton* g_pbstatus;
 QPushButton* g_pbproblems;
-QPushButton* g_pbrdiltoggle;
 
 } // namespace
 
@@ -42,18 +37,6 @@ QPushButton* create_status_button(int size, QWidget* parent) {
     g_pbstatus->setFixedSize(size, size);
     g_pbstatus->hide();
     return g_pbstatus;
-}
-
-QPushButton* create_rdil_toggle_button(int size, QWidget* parent) {
-    g_pbrdiltoggle = new QPushButton(parent);
-    g_pbrdiltoggle->setFlat(true);
-    g_pbrdiltoggle->setFixedHeight(size);
-    g_pbrdiltoggle->hide();
-
-    QObject::connect(statusbar::rdil_toggle_button(), &QPushButton::clicked,
-                     parent, []() { statusbar::toggle_rdil(); });
-
-    return g_pbrdiltoggle;
 }
 
 void set_status_text(const QString& s) { g_lblstatuslabel->setText(s); }
@@ -132,37 +115,6 @@ void set_ready_status() {
     g_pbstatus->show();
 }
 
-void toggle_rdil() {
-    ContextView* cv = utils::mainwindow->context_view();
-    if(!cv) return;
-
-    ISurface* s = cv->surface();
-    if(!s) return;
-
-    s->set_rdil(!s->has_rdil());
-    s->to_widget()->setFocus();
-    statusbar::check_rdil();
-}
-
-void check_rdil() {
-    ContextView* cv = utils::mainwindow->context_view();
-
-    if(!cv) {
-        g_pbrdiltoggle->hide();
-        return;
-    }
-
-    ISurface* s = cv->surface();
-
-    if(s) {
-        g_pbrdiltoggle->setText(s->has_rdil() ? RDIL_MODE_TEXT
-                                              : LISTING_MODE_TEXT);
-        g_pbrdiltoggle->show();
-    }
-    else
-        g_pbrdiltoggle->hide();
-}
-
 void check_problems(const RDContext* ctx) {
     if(!ctx) {
         g_pbproblems->hide();
@@ -181,6 +133,5 @@ void check_problems(const RDContext* ctx) {
 
 QPushButton* problems_button() { return g_pbproblems; }
 QPushButton* status_button() { return g_pbstatus; }
-QPushButton* rdil_toggle_button() { return g_pbrdiltoggle; }
 
 } // namespace statusbar

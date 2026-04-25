@@ -10,7 +10,7 @@ class SurfaceSplitDelegate: public SplitDelegate {
 
 public:
     explicit SurfaceSplitDelegate(RDContext* ctx, QObject* parent = nullptr);
-    QWidget* create_widget(SplitWidget* split, SplitWidget* current) override;
+    QWidget* create_widget(SplitWidget* current, SplitWidget* split) override;
 
 private:
     RDContext* m_context;

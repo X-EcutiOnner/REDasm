@@ -9,8 +9,8 @@ class SplitDelegate: public QObject {
 
 public:
     explicit SplitDelegate(QObject* parent = nullptr): QObject{parent} {}
-    [[nodiscard]] virtual QWidget* create_widget(SplitWidget* split,
-                                                 SplitWidget* current) = 0;
+    [[nodiscard]] virtual QWidget* create_widget(SplitWidget* current,
+                                                 SplitWidget* split) = 0;
 };
 
 class SplitView: public QSplitter {

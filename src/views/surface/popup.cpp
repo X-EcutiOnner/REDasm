@@ -23,7 +23,7 @@ SurfacePopup::SurfacePopup(RDContext* ctx, QWidget* parent): QWidget{parent} {
     // p.setColor(QPalette::Window, themeprovider::color(RD_THEME_BACKGROUND));
     // this->setPalette(p);
 
-    m_surface = rd_surface_create(ctx, RD_RENDERER_POPUP);
+    m_surface = rd_surface_create(ctx, RD_RF_POPUP);
 }
 
 SurfacePopup::~SurfacePopup() { rd_surface_destroy(m_surface); }

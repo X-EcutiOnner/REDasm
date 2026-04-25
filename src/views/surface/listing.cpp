@@ -13,7 +13,7 @@
 
 SurfaceListing::SurfaceListing(RDContext* ctx, QWidget* parent)
     : QAbstractScrollArea{parent}, m_context{ctx} {
-    m_surface = rd_surface_create(ctx, RD_RENDERER_DEFAULT);
+    m_surface = rd_surface_create(ctx, RD_RF_DEFAULT);
     m_popup = new SurfacePopup(ctx, this);
 
     this->setCornerWidget(utils::create_screenshot_button(this->viewport()));
@@ -50,10 +50,12 @@ bool SurfaceListing::has_selection() const {
     return rd_surface_has_selection(m_surface);
 }
 
-bool SurfaceListing::has_rdil() const { return rd_surface_has_rdil(m_surface); }
+RDRenderMode SurfaceListing::get_mode() const {
+    return rd_surface_get_mode(m_surface);
+}
 
-void SurfaceListing::set_rdil(bool v) {
-    rd_surface_set_rdil(m_surface, v);
+void SurfaceListing::set_mode(RDRenderMode m) {
+    rd_surface_set_mode(m_surface, m);
     this->viewport()->update();
 }
 
@@ -208,8 +210,6 @@ void SurfaceListing::focusInEvent(QFocusEvent* e) {
         rd_surface_set_cursor_visible(m_surface, true);
         this->invalidate();
     }
-
-    statusbar::check_rdil();
 }
 
 void SurfaceListing::focusOutEvent(QFocusEvent* e) {
