@@ -31,9 +31,9 @@ const QString INSTR_TEMPLATE = QString{R"(
         <b>==== INSTRUCTION ====</b><br>
         <b>Address:</b> %1<br>
         <b>Id:</b> %2<br>
-        <b>Features:</b> %3<br>
+        <b>Flow:</b> %3<br>
         <b>Length:</b> %4<br>
-        <b>Delayslots:</b> %5<br>
+        <b>Delay slots:</b> %5<br>
         <br>
         )"};
 
@@ -136,7 +136,7 @@ void show_details() {
                 .arg(rd_to_hex(cv->context(), instr.id))
                 .arg(instrflow_tostring(&instr))
                 .arg(rd_to_hex(cv->context(), instr.length))
-                .arg(instr.delay_slots);
+                .arg(QString::number(instr.delay_slots));
 
         rd_foreach_operand(i, op, &instr) {
             QString strop = OP_TEMPLATE.arg(i)
