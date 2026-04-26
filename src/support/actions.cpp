@@ -58,18 +58,21 @@ QString optype_tostring(const RDOperand* op) {
     return QString{"#%1"}.arg(op->kind);
 }
 
-QString instrfeatures_tostring(const RDInstruction* instr) {
+QString instrflow_tostring(const RDInstruction* instr) {
+    QString f;
+
     switch(instr->flow) {
-        case RD_IF_JUMP: return "IF_JUMP";
-        case RD_IF_JUMP_COND: return "IF_JUMP_COND";
-        case RD_IF_CALL: return "IF_CALL";
-        case RD_IF_CALL_COND: return "IF_CALL_COND";
-        case RD_IF_STOP: return "IF_STOP";
-        case RD_IF_NOP: return "IF_NOP";
-        default: break;
+        case RD_IF_JUMP: f = "IF_JUMP"; break;
+        case RD_IF_JUMP_COND: f = "IF_JUMP_COND"; break;
+        case RD_IF_CALL: f = "IF_CALL"; break;
+        case RD_IF_CALL_COND: f = "IF_CALL_COND"; break;
+        case RD_IF_STOP: f = "IF_STOP"; break;
+        case RD_IF_NOP: f = "IF_NOP"; break;
+        default: f = "IF_NONE"; break;
     }
 
-    return "IF_NONE";
+    if(rd_is_delay_slot(instr)) f.append(" | IS_DSLOT");
+    return f;
 }
 
 QString xreftype_tostring(const RDXRef& r) {
@@ -131,7 +134,7 @@ void show_details() {
         QString strinstr =
             INSTR_TEMPLATE.arg(rd_to_hex(cv->context(), instr.address))
                 .arg(rd_to_hex(cv->context(), instr.id))
-                .arg(instrfeatures_tostring(&instr))
+                .arg(instrflow_tostring(&instr))
                 .arg(rd_to_hex(cv->context(), instr.length))
                 .arg(instr.delay_slots);
 
