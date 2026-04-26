@@ -23,7 +23,7 @@ QPushButton* create_problems_button(int size, QWidget* parent) {
     g_pbproblems = new QPushButton(parent);
     g_pbproblems->setFlat(true);
     g_pbproblems->setText("\uf071");
-    g_pbproblems->setFont(fontawesome::fa_font());
+    g_pbproblems->setFont(font_awesome::fa_font());
     g_pbproblems->setFixedSize(size, size);
     g_pbproblems->hide();
     return g_pbproblems;
@@ -33,7 +33,7 @@ QPushButton* create_status_button(int size, QWidget* parent) {
     g_pbstatus = new QPushButton(parent);
     g_pbstatus->setFlat(true);
     g_pbstatus->setText("\uf0c8");
-    g_pbstatus->setFont(fontawesome::fa_font());
+    g_pbstatus->setFont(font_awesome::fa_font());
     g_pbstatus->setFixedSize(size, size);
     g_pbstatus->hide();
     return g_pbstatus;
@@ -93,7 +93,7 @@ void set_address(ISurface* surface) {
 
 void set_busy_status() {
     static const QString STYLE =
-        QString{"color: %1;"}.arg(themeprovider::color(RD_THEME_FAIL).name());
+        QString{"color: %1;"}.arg(theme_provider::color(RD_THEME_FAIL).name());
 
     g_pbstatus->setStyleSheet(STYLE);
     g_pbstatus->show();
@@ -101,7 +101,7 @@ void set_busy_status() {
 
 void set_pause_status() {
     static const QString STYLE = QString{"color: %1;"}.arg(
-        themeprovider::color(RD_THEME_WARNING).name());
+        theme_provider::color(RD_THEME_WARNING).name());
 
     g_pbstatus->setStyleSheet(STYLE);
     g_pbstatus->show();
@@ -109,7 +109,7 @@ void set_pause_status() {
 
 void set_ready_status() {
     static const QString STYLE = QString{"color: %1;"}.arg(
-        themeprovider::color(RD_THEME_SUCCESS).name());
+        theme_provider::color(RD_THEME_SUCCESS).name());
 
     g_pbstatus->setStyleSheet(STYLE);
     g_pbstatus->show();
@@ -122,7 +122,7 @@ void check_problems(const RDContext* ctx) {
     }
 
     static const QString STYLE = QString{"color: %1;"}.arg(
-        themeprovider::color(RD_THEME_WARNING).name());
+        theme_provider::color(RD_THEME_WARNING).name());
 
     RDProblemSlice problems = rd_get_all_problems(ctx);
     if(rd_slice_is_empty(problems)) return;

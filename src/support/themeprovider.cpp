@@ -14,7 +14,7 @@
     if(auto it = theme.find(#key); it != theme.end())                          \
         palette.setColor(QPalette::key, it.value().toString());
 
-namespace themeprovider {
+namespace theme_provider {
 
 namespace {
 
@@ -87,7 +87,7 @@ void apply_listing_theme() {
 
 } // namespace
 
-QStringList themes() { return themeprovider::read_themes(":/res/themes"); }
+QStringList themes() { return theme_provider::read_themes(":/res/themes"); }
 
 QString theme(const QString& name) {
     return QString(":/res/themes/%1.json").arg(name.toLower());
@@ -107,10 +107,10 @@ bool is_dark_theme() {
 QColor graph_bg() {
     auto obj = g_theme.object();
 
-    if(obj.contains(themeprovider::GRAPH_BG_KEY))
-        return obj[themeprovider::GRAPH_BG_KEY].toString();
+    if(obj.contains(theme_provider::GRAPH_BG_KEY))
+        return obj[theme_provider::GRAPH_BG_KEY].toString();
 
-    QColor bg = themeprovider::color(RD_THEME_BACKGROUND);
+    QColor bg = theme_provider::color(RD_THEME_BACKGROUND);
     return bg.lightnessF() > 0.5 ? bg.darker(108) : bg.lighter(108);
 }
 
@@ -123,7 +123,7 @@ QIcon icon(const QString& name) {
     REDasmSettings settings;
 
     return QIcon(QString(":/res/%1/%2.png")
-                     .arg(themeprovider::is_dark_theme() ? "dark" : "light")
+                     .arg(theme_provider::is_dark_theme() ? "dark" : "light")
                      .arg(name));
 
     return {};
@@ -131,7 +131,7 @@ QIcon icon(const QString& name) {
 
 void apply_theme() {
     REDasmSettings settings;
-    if(!themeprovider::load_theme(settings.current_theme())) return;
+    if(!theme_provider::load_theme(settings.current_theme())) return;
 
     QJsonObject theme = g_theme.object();
     QPalette palette = qApp->palette();
@@ -150,7 +150,7 @@ void apply_theme() {
     RD_THEME_UI_SET_COLOR(theme, palette, ToolTipText);
 
     qApp->setPalette(palette);
-    themeprovider::apply_listing_theme();
+    theme_provider::apply_listing_theme();
 }
 
-} // namespace themeprovider
+} // namespace theme_provider

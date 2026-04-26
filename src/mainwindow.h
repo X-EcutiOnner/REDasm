@@ -10,6 +10,8 @@ class MainWindow: public QMainWindow {
 public:
     explicit MainWindow(QWidget* parent = nullptr);
     [[nodiscard]] ContextView* context_view() const;
+    void log(RDLogLevel level, const QString& tag, const QString& msg);
+    void init_searchpaths();
     bool loop();
 
 protected:
@@ -32,7 +34,6 @@ private Q_SLOTS:
 
 private:
     [[nodiscard]] bool can_close() const;
-    void init_searchpaths();
     void select_analyzers(RDContext* ctx);
     void show_context_view(RDContext* ctx);
     void enable_context_actions(bool e);

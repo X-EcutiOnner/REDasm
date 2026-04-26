@@ -4,7 +4,7 @@
 #include <QIcon>
 #include <redasm/redasm.h>
 
-namespace themeprovider {
+namespace theme_provider {
 
 bool is_dark_theme();
 QStringList themes();
@@ -14,4 +14,4 @@ QColor color(RDThemeKind kind);
 QIcon icon(const QString& name);
 void apply_theme();
 
-} // namespace themeprovider
+} // namespace theme_provider

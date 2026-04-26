@@ -13,7 +13,7 @@ GraphView::GraphView(QWidget* parent): QAbstractScrollArea(parent) {
     this->setAutoFillBackground(true);
 
     QPalette palette = this->palette();
-    palette.setColor(QPalette::Base, themeprovider::graph_bg());
+    palette.setColor(QPalette::Base, theme_provider::graph_bg());
     this->setPalette(palette);
 }
 

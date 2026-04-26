@@ -61,11 +61,11 @@ void SurfacePath::paintEvent(QPaintEvent* event) {
             penstyle = Qt::DashDotLine;
 
         painter.setPen(
-            QPen{themeprovider::color(p->style), penwidth, penstyle});
+            QPen{theme_provider::color(p->style), penwidth, penstyle});
         painter.drawLines(points);
 
         painter.setPen(
-            QPen{themeprovider::color(p->style), penwidth, Qt::SolidLine});
+            QPen{theme_provider::color(p->style), penwidth, Qt::SolidLine});
         this->fill_arrow(&painter, y2);
     }
 }

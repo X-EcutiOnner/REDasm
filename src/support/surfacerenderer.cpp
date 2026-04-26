@@ -14,8 +14,8 @@ qreal g_cell_h = 0;
 void render_row(QPainter* p, RDRowSlice row, qreal y) {
     for(usize j = 0; j < rd_slice_length(row); j++) {
         RDCell c = rd_slice_at(row, j);
-        QColor fg = themeprovider::color(c.fg);
-        QColor bg = themeprovider::color(c.bg);
+        QColor fg = theme_provider::color(c.fg);
+        QColor bg = theme_provider::color(c.bg);
 
         Q_ASSERT(fg.isValid());
         Q_ASSERT(bg.isValid());
@@ -58,8 +58,8 @@ void render(QPainter* p, RDSurface* surface, usize start, usize n) {
 
         for(usize j = 0; j < rd_slice_length(row); j++) {
             RDCell c = rd_slice_at(row, j);
-            QColor fg = themeprovider::color(c.fg);
-            QColor bg = themeprovider::color(c.bg);
+            QColor fg = theme_provider::color(c.fg);
+            QColor bg = theme_provider::color(c.bg);
 
             Q_ASSERT(fg.isValid());
             Q_ASSERT(bg.isValid());

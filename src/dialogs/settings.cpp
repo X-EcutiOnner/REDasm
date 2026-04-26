@@ -5,7 +5,7 @@
 #include <QMessageBox>
 
 SettingsDialog::SettingsDialog(QWidget* parent): QDialog{parent}, m_ui{this} {
-    m_ui.cbxthemes->addItems(themeprovider::themes());
+    m_ui.cbxthemes->addItems(theme_provider::themes());
     m_ui.fcbxfonts->setFontFilters(QFontComboBox::MonospacedFonts);
 
     auto sizes = QFontDatabase::standardSizes();

@@ -6,7 +6,7 @@
 
 SurfaceView::SurfaceView(RDContext* ctx, QWidget* parent): QSplitter{parent} {
     this->setStyleSheet("QSplitter::handle { background-color: " +
-                        themeprovider::color(RD_THEME_SEEK).name() + "; }");
+                        theme_provider::color(RD_THEME_SEEK).name() + "; }");
 
     this->setFocusPolicy(Qt::NoFocus);
 

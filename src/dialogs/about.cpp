@@ -44,7 +44,7 @@ void compile_searchpaths(QString& html) {
                 <font color="%1">
                     <b>No Search paths set</b>
                 </font>
-            )"}.arg(themeprovider::color(RD_THEME_FAIL).name()));
+            )"}.arg(theme_provider::color(RD_THEME_FAIL).name()));
         // clang-format on
     }
 }

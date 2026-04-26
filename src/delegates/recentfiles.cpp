@@ -16,7 +16,7 @@ void RecentFilesDelegate::paint(QPainter* painter,
     painter->save();
 
     if(option.state & QStyle::State_MouseOver) {
-        if(themeprovider::is_dark_theme())
+        if(theme_provider::is_dark_theme())
             painter->fillRect(option.rect,
                               option.palette.window().color().lighter(115));
         else

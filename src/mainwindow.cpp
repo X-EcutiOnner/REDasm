@@ -17,7 +17,6 @@
 // #include "rdui/qtui.h"
 #include "statusbar.h"
 #include "support/settings.h"
-#include "support/surfacerenderer.h"
 #include "support/utils.h"
 #include "views/welcome.h"
 #include <QDirIterator>
@@ -29,7 +28,6 @@
 #include <QTimer>
 
 MainWindow::MainWindow(QWidget* parent): QMainWindow{parent}, m_ui{this} {
-    surface_renderer::init();
     utils::mainwindow = this;
 
     this->setWindowIcon(utils::get_logo());
@@ -47,7 +45,6 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow{parent}, m_ui{this} {
         statusbar::create_status_button(m_ui.statusbar->height(), this));
 
     this->show_welcome_view();
-    this->init_searchpaths();
 
     connect(m_ui.actfileexit, &QAction::triggered, this, &MainWindow::close);
     connect(m_ui.actfileopen, &QAction::triggered, this,
@@ -271,9 +268,12 @@ void MainWindow::enable_context_actions(bool e) { // NOLINT
     m_ui.actviewimported->setVisible(e);
     m_ui.actviewstrings->setVisible(e);
 
-    m_ui.statusbar->setVisible(e);
-
-    if(!e) m_ui.logview->clear();
+    if(!e) {
+        statusbar::set_status_text(QString{});
+        statusbar::problems_button()->hide();
+        statusbar::status_button()->hide();
+        m_ui.logview->clear();
+    }
 }
 
 void MainWindow::open_file(const QString& filepath) {
@@ -305,6 +305,11 @@ void MainWindow::open_file(const QString& filepath) {
 void MainWindow::select_file() {
     QString s = QFileDialog::getOpenFileName(this, "Disassemble file...");
     if(!s.isEmpty()) this->open_file(s);
+}
+
+void MainWindow::log(RDLogLevel level, const QString& tag, // NOLINT
+                     const QString& msg) {
+    m_ui.logview->log(level, tag, msg);
 }
 
 void MainWindow::init_searchpaths() {

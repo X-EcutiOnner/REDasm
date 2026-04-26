@@ -71,7 +71,7 @@ void init_fontawesome() {
 
 } // namespace
 
-namespace fontawesome {
+namespace font_awesome {
 
 QFont fa_font() {
     init_fontawesome();
@@ -90,7 +90,7 @@ QFont fa_brands_font() {
 
 QIcon icon(const QChar& code, const QColor& color) {
     auto* engine = new FAIconEngine();
-    engine->font = fontawesome::fa_font();
+    engine->font = font_awesome::fa_font();
     engine->letter = code;
     engine->color = color;
     return QIcon{engine};
@@ -98,20 +98,20 @@ QIcon icon(const QChar& code, const QColor& color) {
 
 QIcon brand(const QChar& code, const QColor& color) {
     auto* engine = new FAIconEngine();
-    engine->font = fontawesome::fa_brands_font();
+    engine->font = font_awesome::fa_brands_font();
     engine->letter = code;
     engine->color = color;
     return QIcon{engine};
 }
 
 QIcon icon(const QChar& code) {
-    return fontawesome::icon(
+    return font_awesome::icon(
         code, qApp->palette().color(QPalette::Normal, QPalette::ButtonText));
 }
 
 QIcon brand(const QChar& code) {
-    return fontawesome::brand(
+    return font_awesome::brand(
         code, qApp->palette().color(QPalette::Normal, QPalette::ButtonText));
 }
 
-} // namespace fontawesome
+} // namespace font_awesome

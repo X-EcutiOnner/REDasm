@@ -38,7 +38,7 @@ QPixmap copy_screenshot(QWidget* w) {
 void confirm_feedback(QPushButton* pb) {
     QIcon icon = pb->icon();
     pb->setProperty(utils::FEEDBACK_IN_PROGRESS, true);
-    pb->setIcon(FA_ICON_COLOR(0xf00c, themeprovider::color(RD_THEME_SUCCESS)));
+    pb->setIcon(FA_ICON_COLOR(0xf00c, theme_provider::color(RD_THEME_SUCCESS)));
 
     QTimer::singleShot(utils::FEEDBACK_INTERVAL, [pb, icon]() {
         pb->setIcon(icon);
@@ -103,7 +103,7 @@ QPushButton* create_screenshot_button(QWidget* w) {
 }
 
 QPixmap get_logo() {
-    if(themeprovider::is_dark_theme()) return QPixmap{":/res/logo_dark.png"};
+    if(theme_provider::is_dark_theme()) return QPixmap{":/res/logo_dark.png"};
     return QPixmap{":/res/logo.png"};
 }
 

@@ -3,7 +3,7 @@
 #include <QFont>
 #include <QIcon>
 
-namespace fontawesome {
+namespace font_awesome {
 
 QFont fa_font();
 QFont fa_brands_font();
@@ -12,11 +12,11 @@ QIcon icon(const QChar& code);
 QIcon brand(const QChar& code, const QColor& color);
 QIcon brand(const QChar& code);
 
-} // namespace fontawesome
+} // namespace font_awesome
 
-#define FA_FONT fontawesome::fa_font()
-#define FAB_FONT fontawesome::fa_brands_font()
-#define FA_ICON(code) fontawesome::icon(QChar{code})
-#define FA_ICON_COLOR(code, color) fontawesome::icon(QChar{code}, color)
-#define FAB_ICON(code) fontawesome::brand(QChar{code})
-#define FAB_ICON_COLOR(code, color) fontawesome::brand(QChar{code}, color)
+#define FA_FONT font_awesome::fa_font()
+#define FAB_FONT font_awesome::fa_brands_font()
+#define FA_ICON(code) font_awesome::icon(QChar{code})
+#define FA_ICON_COLOR(code, color) font_awesome::icon(QChar{code}, color)
+#define FAB_ICON(code) font_awesome::brand(QChar{code})
+#define FAB_ICON_COLOR(code, color) font_awesome::brand(QChar{code}, color)

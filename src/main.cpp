@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "support/surfacerenderer.h"
 #include "support/themeprovider.h"
 #include <QApplication>
 #include <QString>
@@ -9,22 +10,33 @@ namespace {
 const QString REDASM_VERSION = "4.0";
 bool running = true;
 
+void on_log(RDLogLevel level, const char* tag, const char* msg,
+            void* userdata) {
+    auto* mw = reinterpret_cast<MainWindow*>(userdata);
+    mw->log(level, QString::fromUtf8(tag), QString::fromUtf8(msg));
+}
+
 } // namespace
 
 int main(int argc, char** argv) {
-    rd_init();
     QApplication::setStyle(QStyleFactory::create("Fusion"));
 
     QApplication app{argc, argv};
     app.setApplicationName("redasm");
     app.setApplicationDisplayName("REDasm " + REDASM_VERSION);
 
-    themeprovider::apply_theme();
+    theme_provider::apply_theme();
+    surface_renderer::init();
 
     { // Scoping makes sure that widgets and context are freed before deinit
         MainWindow mw;
-        QObject::connect(&mw, &MainWindow::closed, []() { running = false; });
         mw.show();
+
+        rd_set_log_callback(on_log, &mw);
+        rd_init();
+        mw.init_searchpaths();
+
+        QObject::connect(&mw, &MainWindow::closed, []() { running = false; });
 
         while(running) {
             if(mw.loop())
@@ -32,6 +44,8 @@ int main(int argc, char** argv) {
             else
                 app.processEvents(QEventLoop::WaitForMoreEvents);
         }
+
+        rd_set_log_callback(nullptr, nullptr);
     }
 
     rd_deinit();

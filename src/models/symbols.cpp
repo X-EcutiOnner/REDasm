@@ -6,14 +6,15 @@ namespace {
 
 QColor get_foreground_color(const RDSymbol& sym) {
     switch(sym.kind) {
-        case RD_SYMBOL_SEGMENT: return themeprovider::color(RD_THEME_SEGMENT);
-        case RD_SYMBOL_FUNCTION: return themeprovider::color(RD_THEME_FUNCTION);
-        case RD_SYMBOL_TYPE: return themeprovider::color(RD_THEME_TYPE);
-        case RD_SYMBOL_STRING: return themeprovider::color(RD_THEME_STRING);
+        case RD_SYMBOL_SEGMENT: return theme_provider::color(RD_THEME_SEGMENT);
+        case RD_SYMBOL_FUNCTION:
+            return theme_provider::color(RD_THEME_FUNCTION);
+        case RD_SYMBOL_TYPE: return theme_provider::color(RD_THEME_TYPE);
+        case RD_SYMBOL_STRING: return theme_provider::color(RD_THEME_STRING);
         default: break;
     }
 
-    return themeprovider::color(RD_THEME_FOREGROUND);
+    return theme_provider::color(RD_THEME_FOREGROUND);
 }
 
 } // namespace
@@ -59,7 +60,7 @@ QVariant SymbolsModel::data(const QModelIndex& index, int role) const {
     }
     else if(role == Qt::ForegroundRole) {
         if(m_highlightaddress && index.column() == 0)
-            return themeprovider::color(RD_THEME_LOCATION);
+            return theme_provider::color(RD_THEME_LOCATION);
         if(m_highlightsymbol && index.column() == 2)
             return get_foreground_color(sym);
     }

@@ -63,9 +63,9 @@ SurfaceSplitDelegate::SurfaceSplitDelegate(RDContext* ctx, QObject* parent)
 QWidget* SurfaceSplitDelegate::create_widget(SplitWidget* current,
                                              SplitWidget* split) {
     QAction* actback = current->add_button(
-        FA_ICON_COLOR(0xf053, themeprovider::color(RD_THEME_SUCCESS)));
+        FA_ICON_COLOR(0xf053, theme_provider::color(RD_THEME_SUCCESS)));
     QAction* actforward = current->add_button(
-        FA_ICON_COLOR(0xf054, themeprovider::color(RD_THEME_SUCCESS)));
+        FA_ICON_COLOR(0xf054, theme_provider::color(RD_THEME_SUCCESS)));
     current->add_button(actions::get(actions::GOTO));
 
     auto* cbrendermode =
