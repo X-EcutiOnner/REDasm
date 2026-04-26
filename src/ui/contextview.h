@@ -24,6 +24,22 @@ struct ContextView {
         this->tvfunctions->setRootIsDecorated(false);
         this->tvfunctions->setFrameShape(QFrame::NoFrame);
 
+        QPalette p = self->palette();
+        QColor bg = p.color(QPalette::Window);
+        QColor fg = p.color(QPalette::WindowText);
+
+        const QString STYLE = QString{"QHeaderView::section {"
+                                      "    background-color: %1;"
+                                      "    color: %2;"
+                                      "    padding: 4px;"
+                                      "    border: 1px solid %1;"
+                                      "    font-weight: bold;"
+                                      "}"}
+                                  .arg(bg.name())
+                                  .arg(fg.name());
+
+        this->tvfunctions->setStyleSheet(STYLE);
+
         this->splitter = new QSplitter();
         this->splitter->addWidget(this->tvfunctions);
         this->splitter->addWidget(this->splitview);
