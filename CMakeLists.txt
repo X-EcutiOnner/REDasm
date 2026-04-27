@@ -39,6 +39,7 @@ target_sources(${PROJECT_NAME}
         src/dialogs/settings.cpp
         src/dialogs/table.cpp
         src/hexview/flagsbuffer.cpp
+        src/hexview/flagsdelegate.cpp
         src/models/exported.cpp
         src/models/functions.cpp
         src/models/imported.cpp

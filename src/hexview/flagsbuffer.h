@@ -8,6 +8,7 @@ class FlagsBuffer: public QHexBuffer {
 
 public:
     explicit FlagsBuffer(const RDSegment* segment, QObject* parent = nullptr);
+    [[nodiscard]] const RDFlagsBuffer* flags() const;
     [[nodiscard]] quint64 base_address() const;
 
 public:

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "hexview/flagsdelegate.h"
 #include "ui/memorymapdialog.h"
 #include <QDialog>
 #include <redasm/redasm.h>
@@ -15,5 +16,6 @@ private Q_SLOTS:
 
 private:
     ui::MemoryMapDialog m_ui;
+    FlagsDelegate* m_flagsdelegate;
     const RDContext* m_context;
 };

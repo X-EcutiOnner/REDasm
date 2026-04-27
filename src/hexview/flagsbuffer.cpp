@@ -5,6 +5,7 @@ FlagsBuffer::FlagsBuffer(const RDSegment* segment, QObject* parent)
     m_flags = rd_segment_get_flags(segment);
 }
 
+const RDFlagsBuffer* FlagsBuffer::flags() const { return m_flags; }
 quint64 FlagsBuffer::base_address() const { return m_segment->start_address; }
 
 qint64 FlagsBuffer::length() const {

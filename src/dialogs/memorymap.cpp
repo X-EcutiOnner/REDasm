@@ -5,6 +5,9 @@
 MemoryMapDialog::MemoryMapDialog(const RDContext* ctx, QWidget* parent)
     : QDialog{parent}, m_ui{this}, m_context{ctx} {
 
+    m_flagsdelegate = new FlagsDelegate(m_ui.hexview);
+    m_ui.hexview->setDelegate(m_flagsdelegate);
+
     RDSegmentSlice segments = rd_get_all_segments(ctx);
 
     for(usize i = 0; i < rd_slice_length(segments); i++) {
@@ -27,8 +30,9 @@ void MemoryMapDialog::show_memory(int idx) {
     const RDSegment* s = rd_slice_at(segments, idx);
 
     QHexDocument* olddoc = m_ui.hexview->hexDocument();
-
     auto* flagsbuffer = new FlagsBuffer(s);
+    m_flagsdelegate->set_flags_buffer(flagsbuffer->flags());
+
     QHexDocument* hexdocument = QHexDocument::fromBuffer(flagsbuffer);
     m_ui.hexview->setDocument(hexdocument);
     m_ui.hexview->setBaseAddress(flagsbuffer->base_address());
