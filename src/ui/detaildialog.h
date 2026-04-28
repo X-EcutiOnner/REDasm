@@ -11,6 +11,7 @@ struct DetailDialog {
 
     explicit DetailDialog(QDialog* self) {
         self->setAttribute(Qt::WA_DeleteOnClose);
+        self->setWindowTitle("Details");
         self->resize(800, 600);
         self->setModal(true);
 

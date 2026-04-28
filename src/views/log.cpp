@@ -1,7 +1,6 @@
 #include "log.h"
 #include "support/themeprovider.h"
 #include <QFontDatabase>
-#include <QVBoxLayout>
 
 LogView::LogView(QWidget* parent): QWidget{parent}, m_ui{this} {
     this->setVisible(false);

@@ -5,7 +5,7 @@
 #include <QComboBox>
 #include <QDialog>
 #include <QDialogButtonBox>
-#include <QGridLayout>
+#include <QFormLayout>
 #include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>
@@ -19,7 +19,8 @@ struct LoaderDialog {
     QGroupBox *gboptions, *gbloader, *gbaddressing;
     QComboBox* cbprocessors;
     QSpinBox* sbminstring;
-    QLineEdit *leentrypoint, *leoffset, *lebaseaddress;
+    QLineEdit *leentrypoint, *leoffset, *leaddress;
+    QDialogButtonBox* buttonbox;
 
     explicit LoaderDialog(QDialog* self) {
         self->setAttribute(Qt::WA_DeleteOnClose);
@@ -31,15 +32,15 @@ struct LoaderDialog {
         this->setup_top(vbox);
         this->setup_bottom(vbox);
 
-        auto* buttonbox = new QDialogButtonBox(QDialogButtonBox::Ok |
+        this->buttonbox = new QDialogButtonBox(QDialogButtonBox::Ok |
                                                QDialogButtonBox::Cancel);
 
-        QObject::connect(buttonbox, &QDialogButtonBox::accepted, self,
+        QObject::connect(this->buttonbox, &QDialogButtonBox::accepted, self,
                          &QDialog::accept);
-        QObject::connect(buttonbox, &QDialogButtonBox::rejected, self,
+        QObject::connect(this->buttonbox, &QDialogButtonBox::rejected, self,
                          &QDialog::reject);
 
-        vbox->addWidget(buttonbox);
+        vbox->addWidget(this->buttonbox);
     }
 
 private:
@@ -63,18 +64,16 @@ private:
         this->gbloader = new QGroupBox();
         this->gbloader->setTitle("Loader");
 
-        auto* grid = new QGridLayout(this->gbloader);
-        grid->setColumnStretch(1, 1);
-        grid->addWidget(new QLabel("Processor:"), 0, 0, 1, 1);
         this->cbprocessors = new QComboBox();
-        grid->addWidget(this->cbprocessors, 0, 1, 1, 1);
 
-        grid->addWidget(new QLabel("Min String:"), 1, 0, 1, 1);
         this->sbminstring = new QSpinBox();
         this->sbminstring->setMinimum(1);
         this->sbminstring->setMaximum(100);
-        grid->addWidget(this->sbminstring, 1, 1, 1, 1);
 
+        auto* form = new QFormLayout(this->gbloader);
+        form->setLabelAlignment(Qt::AlignRight);
+        form->addRow("Processor:", this->cbprocessors);
+        form->addRow("Min String:", this->sbminstring);
         l->addWidget(this->gbloader);
     }
 
@@ -82,17 +81,15 @@ private:
         this->gbaddressing = new QGroupBox();
         this->gbaddressing->setTitle("Addressing");
 
-        auto* grid = new QGridLayout(this->gbaddressing);
-        grid->setColumnStretch(1, 1);
-        grid->addWidget(new QLabel("Entry Point (Relative):"), 0, 0, 1, 1);
         this->leentrypoint = new QLineEdit();
-        grid->addWidget(this->leentrypoint, 0, 1, 1, 1);
-        grid->addWidget(new QLabel("Offset:"), 1, 0, 1, 1);
-        grid->addWidget(new QLineEdit(), 1, 1, 1, 1);
+        this->leaddress = new QLineEdit();
+        this->leoffset = new QLineEdit();
 
-        this->lebaseaddress = new QLineEdit();
-        grid->addWidget(this->lebaseaddress, 2, 1, 1, 1);
-        grid->addWidget(new QLabel("Base Address:"), 2, 0, 1, 1);
+        auto* form = new QFormLayout(this->gbaddressing);
+        form->setLabelAlignment(Qt::AlignRight);
+        form->addRow("Entry Point:", this->leentrypoint);
+        form->addRow("Address:", this->leaddress);
+        form->addRow("Offset:", this->leoffset);
         l->addWidget(this->gbaddressing);
     }
 };

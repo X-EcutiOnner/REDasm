@@ -6,8 +6,11 @@
 #include "views/surface/listing.h"
 #include <QClipboard>
 #include <QKeyEvent>
+#include <QLineEdit>
 #include <QMenu>
 #include <QPainter>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 #include <QStackedWidget>
 #include <QTimer>
 #include <QToolButton>
@@ -161,6 +164,12 @@ bool handle_key_press(ISurface* surface, QKeyEvent* e) {
         return false;
 
     return true;
+}
+
+void configure_hex_input(QLineEdit* le) {
+    const QRegularExpression H{"[a-fA-F0-9]*"};
+    le->setValidator(new QRegularExpressionValidator(H, le));
+    le->setMaxLength(sizeof(u64) * 2);
 }
 
 } // namespace utils

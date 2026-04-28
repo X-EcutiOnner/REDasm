@@ -31,6 +31,7 @@ target_sources(${PROJECT_NAME}
         src/delegates/recentfiles.cpp
         src/dialogs/about.cpp
         src/dialogs/analyzer.cpp
+        src/dialogs/decoder.cpp
         src/dialogs/detail.cpp
         src/dialogs/flc.cpp
         src/dialogs/goto.cpp

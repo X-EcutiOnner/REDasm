@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "dialogs/analyzer.h"
+#include "dialogs/decoder.h"
 #include "support/actions.h"
 // #include "dialogs/errordialog.h"
 #include "dialogs/flc.h"
@@ -77,6 +78,11 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow{parent}, m_ui{this} {
         if(!ctxview) return;
         auto* dlgflc = new FLCDialog(ctxview->context(), this);
         dlgflc->show();
+    });
+
+    connect(m_ui.acttoolsdecoder, &QAction::triggered, this, [&]() {
+        auto* dlgdecoder = new DecoderDialog(this);
+        dlgdecoder->show();
     });
 
     connect(m_ui.acttoolsproblems, &QAction::triggered, this,
@@ -259,11 +265,10 @@ void MainWindow::enable_context_actions(bool e) { // NOLINT
     m_ui.actfileclose->setVisible(e);
     m_ui.actedit->setVisible(e);
     m_ui.actview->setVisible(e);
-    m_ui.acttools->setVisible(e);
-    m_ui.acttoolsflc->setVisible(e);
-    m_ui.acttoolsproblems->setVisible(e);
 
     m_ui.acttbseparator->setVisible(e);
+    m_ui.acttoolsflc->setVisible(e);
+    m_ui.acttoolsproblems->setVisible(e);
     m_ui.actviewexported->setVisible(e);
     m_ui.actviewimported->setVisible(e);
     m_ui.actviewstrings->setVisible(e);
@@ -291,7 +296,8 @@ void MainWindow::open_file(const QString& filepath) {
     auto* dlgloader = new LoaderDialog(ctxslice, this);
 
     connect(dlgloader, &LoaderDialog::accepted, this, [&, dlgloader]() {
-        if(rd_accept(dlgloader->context, dlgloader->processorplugin))
+        if(rd_accept(dlgloader->context, dlgloader->processorplugin,
+                     &dlgloader->addressing))
             this->select_analyzers(dlgloader->context);
         else
             QMessageBox::information(this, "Loader",

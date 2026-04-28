@@ -20,7 +20,7 @@ struct MainWindow {
     QMenu* mnurecents;
     QAction *actfileopen, *actfileclose, *actfileexit;
     QAction* actwinrestoredefault;
-    QAction *acttoolsflc, *acttoolsproblems;
+    QAction *acttoolsflc, *acttoolsdecoder, *acttoolsproblems;
     QAction *actedit, *actview, *acttools;
     QAction *actviewmemorymap, *actviewsegments, *actviewmappings,
         *actviewsegmentregisters, *actviewstrings, *actviewimported,
@@ -53,7 +53,6 @@ struct MainWindow {
         this->actview->setVisible(false);
 
         this->acttools = this->mnutools->menuAction();
-        this->acttools->setVisible(false);
 
         this->actfileopen = this->mnufile->addAction(FA_ICON(0xf07c), "&Open");
         this->mnurecents = new QMenu("&Recent Files", menubar);
@@ -80,6 +79,8 @@ struct MainWindow {
 
         this->acttoolsproblems = this->mnutools->addAction("&Problems");
         this->acttoolsproblems->setVisible(false);
+
+        this->acttoolsdecoder = this->mnutools->addAction("&Decoder");
 
         this->actviewmemorymap = this->mnuview->addAction(
             "&Memory Map", QKeySequence{Qt::CTRL | Qt::Key_M});

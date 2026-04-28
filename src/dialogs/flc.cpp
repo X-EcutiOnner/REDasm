@@ -1,12 +1,10 @@
 #include "flc.h"
-#include <QRegularExpression>
-#include <QRegularExpressionValidator>
+#include "support/utils.h"
 
 FLCDialog::FLCDialog(RDContext* ctx, QWidget* parent)
     : QDialog{parent}, m_ui{this}, m_context{ctx} {
-    const QRegularExpression H("[a-fA-F0-9]*");
-    m_ui.leaddress->setValidator(new QRegularExpressionValidator(H, this));
-    m_ui.leoffset->setValidator(new QRegularExpressionValidator(H, this));
+    utils::configure_hex_input(m_ui.leaddress);
+    utils::configure_hex_input(m_ui.leoffset);
 
     connect(m_ui.leaddress, &QLineEdit::textChanged, this,
             &FLCDialog::on_address_changed);
