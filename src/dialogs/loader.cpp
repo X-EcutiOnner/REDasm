@@ -51,12 +51,12 @@ void LoaderDialog::on_loader_changed(int currentrow) {
         m_ui.sbminstring->setValue(rd_get_min_string(this->context));
 
         const RDLoaderPlugin* l = rd_get_loader_plugin(this->context);
-        const char* procid = rd_processor_get_id(this->context);
+        const RDProcessorPlugin* p = rd_get_processor_plugin(this->context);
 
         m_ui.gbaddressing->setEnabled(l->flags & RD_LF_MANUAL);
 
         for(int i = 0; i < m_ui.cbprocessors->count(); i++) {
-            if(m_ui.cbprocessors->itemData(i).toString() == procid) {
+            if(m_ui.cbprocessors->itemData(i).toString() == p->id) {
                 m_ui.cbprocessors->setCurrentIndex(i);
                 return;
             }
