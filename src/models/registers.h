@@ -3,12 +3,11 @@
 #include <QAbstractListModel>
 #include <redasm/redasm.h>
 
-class ReferencesModel: public QAbstractListModel {
+class RegistersModel: public QAbstractListModel {
     Q_OBJECT
 
 public:
-    explicit ReferencesModel(RDContext* ctx, RDAddress address,
-                             QObject* parent = nullptr);
+    explicit RegistersModel(RDContext* ctx, QObject* parent = nullptr);
     [[nodiscard]] RDAddress address(const QModelIndex& index) const;
     void update();
 
@@ -22,6 +21,5 @@ public:
 
 private:
     RDContext* m_context;
-    RDAddress m_address;
-    RDXRefSlice m_refs{};
+    RDTrackedRegisterSlice m_registers{};
 };

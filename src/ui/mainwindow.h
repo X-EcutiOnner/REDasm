@@ -23,7 +23,7 @@ struct MainWindow {
     QAction *acttoolsflc, *acttoolsdecoder, *acttoolsproblems;
     QAction *actedit, *actview, *acttools;
     QAction *actviewmemorymap, *actviewsegments, *actviewmappings,
-        *actviewsegmentregisters, *actviewstrings, *actviewimported,
+        *actviewtrackedregisters, *actviewstrings, *actviewimported,
         *actviewexported;
     QAction* acttbseparator;
     ::LogView* logview;
@@ -85,11 +85,12 @@ struct MainWindow {
         this->actviewmemorymap = this->mnuview->addAction(
             "&Memory Map", QKeySequence{Qt::CTRL | Qt::Key_M});
 
-        this->actviewsegmentregisters = this->mnuview->addAction(
-            "Se&gment Registers", QKeySequence{Qt::CTRL | Qt::ALT | Qt::Key_S});
+        this->actviewtrackedregisters = this->mnuview->addAction(
+            "&Tracked Registers",
+            QKeySequence{Qt::CTRL | Qt::SHIFT | Qt::Key_T});
 
         this->actviewsegments = this->mnuview->addAction(
-            "S&egments", QKeySequence{Qt::CTRL | Qt::SHIFT | Qt::Key_S});
+            "&Segments", QKeySequence{Qt::CTRL | Qt::SHIFT | Qt::Key_S});
 
         this->actviewmappings = this->mnuview->addAction(
             "M&appings", QKeySequence{Qt::CTRL | Qt::SHIFT | Qt::Key_M});

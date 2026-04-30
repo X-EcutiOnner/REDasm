@@ -1,20 +1,19 @@
 #include "mainwindow.h"
 #include "dialogs/analyzer.h"
 #include "dialogs/decoder.h"
-#include "support/actions.h"
-// #include "dialogs/errordialog.h"
 #include "dialogs/flc.h"
 #include "dialogs/loader.h"
 #include "dialogs/memorymap.h"
-// #include "dialogs/segmentregistersdialog.h"
 #include "dialogs/table.h"
 #include "models/exported.h"
 #include "models/imported.h"
 #include "models/mappings.h"
 #include "models/problems.h"
+#include "models/registers.h"
 #include "models/segments.h"
 #include "models/symbols.h"
 #include "models/symbolsfilter.h"
+#include "support/actions.h"
 // #include "rdui/qtui.h"
 #include "statusbar.h"
 #include "support/settings.h"
@@ -56,8 +55,8 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow{parent}, m_ui{this} {
             &MainWindow::show_segments);
     connect(m_ui.actviewmappings, &QAction::triggered, this,
             &MainWindow::show_mappings);
-    connect(m_ui.actviewsegmentregisters, &QAction::triggered, this,
-            &MainWindow::show_segment_registers);
+    connect(m_ui.actviewtrackedregisters, &QAction::triggered, this,
+            &MainWindow::show_tracked_registers);
     connect(m_ui.actviewstrings, &QAction::triggered, this,
             &MainWindow::show_strings);
     connect(m_ui.actviewexported, &QAction::triggered, this,
@@ -365,8 +364,8 @@ void MainWindow::show_segments() {
 
     connect(dlg, &TableDialog::double_clicked, this,
             [&, ctxview, dlg](const QModelIndex& index) {
-                auto* segmentsmodel = static_cast<SegmentsModel*>(dlg->model());
-                ctxview->surface()->jump_to(segmentsmodel->address(index));
+                auto* m = static_cast<SegmentsModel*>(dlg->model());
+                ctxview->surface()->jump_to(m->address(index));
                 dlg->accept();
             });
 
@@ -383,8 +382,8 @@ void MainWindow::show_mappings() {
 
     connect(dlg, &TableDialog::double_clicked, this,
             [&, ctxview, dlg](const QModelIndex& index) {
-                auto* mappingsmodel = static_cast<MappingsModel*>(dlg->model());
-                ctxview->surface()->jump_to(mappingsmodel->address(index));
+                auto* m = static_cast<MappingsModel*>(dlg->model());
+                ctxview->surface()->jump_to(m->address(index));
                 dlg->accept();
             });
 
@@ -392,22 +391,21 @@ void MainWindow::show_mappings() {
     dlg->show();
 }
 
-void MainWindow::show_segment_registers() {
-    // static SegmentRegistersDialog* dlg = nullptr;
-    //
-    // if(!dlg) {
-    //     dlg = new SegmentRegistersDialog(this);
-    //
-    //     connect(dlg, &SegmentRegistersDialog::double_clicked, this,
-    //             [&](const QModelIndex& index) {
-    //                 ContextView* ctxview = this->context_view();
-    //                 if(!ctxview) return;
-    //
-    //                 ctxview->jump_to(dlg->model()->address(index));
-    //             });
-    // }
-    //
-    // dlg->show();
+void MainWindow::show_tracked_registers() {
+    ContextView* ctxview = this->context_view();
+    if(!ctxview) return;
+
+    auto* dlg = new TableDialog("Tracked Registers", this);
+
+    connect(dlg, &TableDialog::double_clicked, this,
+            [&, ctxview, dlg](const QModelIndex& index) {
+                auto* m = static_cast<RegistersModel*>(dlg->model());
+                ctxview->surface()->jump_to(m->address(index));
+                dlg->accept();
+            });
+
+    dlg->set_model(new RegistersModel(ctxview->context(), dlg));
+    dlg->show();
 }
 
 void MainWindow::show_strings() {

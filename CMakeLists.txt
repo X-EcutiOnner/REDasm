@@ -48,6 +48,7 @@ target_sources(${PROJECT_NAME}
         src/models/problems.cpp
         src/models/recentfiles.cpp
         src/models/references.cpp
+        src/models/registers.cpp
         src/models/segments.cpp
         src/models/symbols.cpp
         src/models/symbolsfilter.cpp
