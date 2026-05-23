@@ -83,7 +83,7 @@ void set_address(ISurface* surface) {
 
     if(rd_to_offset(ctx, *address, &offset)) {
         s += QString::fromWCharArray(L"<b>Offset: </b>%1\u00A0\u00A0")
-                 .arg(utils::to_hex_addr(*address, seg));
+                 .arg(utils::to_hex_addr(offset, seg));
     }
 
     if(seg) {
