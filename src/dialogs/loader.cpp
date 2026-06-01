@@ -16,9 +16,9 @@ LoaderDialog::LoaderDialog(RDContextSlice ctxslice, QWidget* parent)
     this->populate_processors();
 
     for(usize i = 0; i < rd_slice_length(m_contextslice); i++) {
-        const RDLoaderPlugin* lp =
-            rd_get_loader_plugin(rd_slice_at(m_contextslice, i));
-        m_ui.lwloaders->addItem(lp->name);
+        const char* ldr_name =
+            rd_get_loader_name(rd_slice_at(m_contextslice, i));
+        m_ui.lwloaders->addItem(QString::fromUtf8(ldr_name));
     }
 
     connect(m_ui.lwloaders, &QListWidget::currentRowChanged, this,

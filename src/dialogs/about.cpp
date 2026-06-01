@@ -63,9 +63,7 @@ void compile_plugins(QString& html) {
         )";
 
         if(i < rd_slice_length(pldr)) {
-            row = row.arg(QString{"%1 [%2]"}
-                              .arg(rd_slice_at(pldr, i)->loader->name)
-                              .arg(rd_slice_at(pldr, i)->loader->id));
+            row = row.arg(QString{"%1"}.arg(rd_slice_at(pldr, i)->loader->id));
         }
         else
             row = row.arg(QString{});
