@@ -28,37 +28,40 @@ void configure_searchpaths() {
     constexpr bool is_appimage = false;
 #endif
 
+    auto append_unique = [](auto& list, const auto& value) {
+        if(!list.contains(value)) list.append(value);
+    };
+
     // clang-format off
     if(is_appimage) {
         // 1. user plugins
         const QString USER_DIR = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-        utils::search_paths.append(USER_DIR + "/plugins");
-        utils::kb_search_paths.append((USER_DIR + "/kb").toUtf8());
+        append_unique(utils::search_paths, USER_DIR + "/plugins");
+        append_unique(utils::kb_search_paths, (USER_DIR + "/kb").toUtf8());
 
         // 2. bundled plugins
         const QString APP_DIR = QString::fromUtf8(appimage_dir);
-        utils::search_paths.append(APP_DIR + "/usr/lib/redasm/plugins");
-        utils::kb_search_paths.append((APP_DIR + "/usr/share/redasm/kb").toUtf8());
+        append_unique(utils::search_paths, APP_DIR + "/usr/lib/redasm/plugins");
+        append_unique(utils::kb_search_paths, (APP_DIR + "/usr/share/redasm/kb").toUtf8());
 
         // 3. system plugins
         for(const QString& sp : QStandardPaths::standardLocations(QStandardPaths::AppDataLocation)) {
             if(sp == USER_DIR) continue; // already added, skip
 
-            utils::search_paths.append(sp + "/plugins");
-            utils::kb_search_paths.append((sp + "/kb").toUtf8());
+            append_unique(utils::search_paths, sp + "/plugins");
+            append_unique(utils::kb_search_paths, (sp + "/kb").toUtf8());
         }
     }
     else {
         const QString APP_DIR = qApp->applicationDirPath();
 
-        utils::search_paths.append(APP_DIR + QDir::separator() + "plugins");
-        utils::kb_search_paths.append((APP_DIR + QDir::separator() + "kb").toUtf8());
+        append_unique(utils::search_paths, APP_DIR + QDir::separator() + "plugins");
+        append_unique(utils::kb_search_paths, (APP_DIR + QDir::separator() + "kb").toUtf8());
 
         for(const QString& sp : QStandardPaths::standardLocations(QStandardPaths::AppDataLocation)) {
-            utils::search_paths.append(sp + QDir::separator() + "plugins");
-            utils::kb_search_paths.append((sp + QDir::separator() + "kb").toUtf8());
+            append_unique(utils::search_paths, sp + QDir::separator() + "plugins");
+            append_unique(utils::kb_search_paths, (sp + QDir::separator() + "kb").toUtf8());
         }
-
     }
     // clang-format on
 }
