@@ -378,11 +378,11 @@ void MainWindow::show_strings() {
 
     connect(dlg, &TableDialog::double_clicked, this,
             [&, dlg](const QModelIndex& index) {
-                ContextView* ctxview = this->context_view();
-                if(!ctxview) return;
+                ContextView* cv = this->context_view();
+                if(!cv) return;
 
                 auto* m = static_cast<StringsModel*>(dlg->model());
-                ctxview->surface()->jump_to(m->address(index));
+                cv->surface()->jump_to(m->address(index));
                 dlg->accept();
             });
 
@@ -402,11 +402,11 @@ void MainWindow::show_exported() {
 
     connect(dlg, &TableDialog::double_clicked, this,
             [&, dlg](const QModelIndex& index) {
-                ContextView* ctxview = this->context_view();
-                if(!ctxview) return;
+                ContextView* cv = this->context_view();
+                if(!cv) return;
 
                 auto* m = static_cast<ExportedModel*>(dlg->source_model());
-                ctxview->surface()->jump_to(m->address(index));
+                cv->surface()->jump_to(m->address(index));
                 dlg->accept();
             });
 
@@ -424,11 +424,11 @@ void MainWindow::show_imported() {
 
     connect(dlg, &TableDialog::double_clicked, this,
             [&, dlg](const QModelIndex& index) {
-                ContextView* ctxview = this->context_view();
-                if(!ctxview) return;
+                ContextView* cv = this->context_view();
+                if(!cv) return;
 
                 auto* m = static_cast<ImportedModel*>(dlg->source_model());
-                ctxview->surface()->jump_to(m->address(index));
+                cv->surface()->jump_to(m->address(index));
                 dlg->accept();
             });
 

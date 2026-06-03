@@ -76,9 +76,8 @@ void LoaderDialog::on_processor_changed(int currentrow) {
     int loaderidx = m_ui.lwloaders->currentRow();
 
     if(loaderidx != -1 && currentrow != -1) {
-        QVariant data = m_ui.cbprocessors->itemData(currentrow);
-        this->processorplugin =
-            rd_processor_find(qUtf8Printable(data.toString()));
+        QVariant d = m_ui.cbprocessors->itemData(currentrow);
+        this->processorplugin = rd_processor_find(qUtf8Printable(d.toString()));
     }
     else
         this->processorplugin = nullptr;
