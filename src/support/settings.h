@@ -25,7 +25,7 @@ public:
     void change_font_size(int size);
 
 public:
-    static QFont font();
+    static QFont load_font();
 
 private:
     static QByteArray m_defaultstate;

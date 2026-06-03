@@ -31,7 +31,7 @@ void render_row(QPainter* p, RDRowSlice row, qreal y) {
 } // namespace
 
 void init() {
-    g_font = REDasmSettings::font();
+    g_font = REDasmSettings::load_font();
 
     QFontMetricsF fm{g_font};
     g_cell_w = fm.horizontalAdvance(" ");

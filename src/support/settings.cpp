@@ -92,18 +92,14 @@ void REDasmSettings::change_font_size(int size) {
     this->setValue(SELECTED_FONT_SIZE, size);
 }
 
-QFont REDasmSettings::font() {
+QFont REDasmSettings::load_font() {
     REDasmSettings settings;
     QFont f = settings.current_font();
 
-    if(f.fixedPitch() || f.family().contains("mono", Qt::CaseInsensitive) ||
-       f.styleHint() == QFont::Monospace ||
-       f.styleHint() == QFont::TypeWriter) {
-        f.setFamily("Monospace");
-        f.setFixedPitch(true);
-        f.setStyleHint(QFont::TypeWriter);
-    }
+    QFontMetrics fm{f};
+    bool is_monospace = fm.horizontalAdvance('i') == fm.horizontalAdvance('W');
 
+    if(!is_monospace) f = QFontDatabase::systemFont(QFontDatabase::FixedFont);
     f.setPixelSize(settings.current_font_size());
     return f;
 }
