@@ -24,6 +24,7 @@ void configure_searchpaths() {
     const char* appimage_dir = std::getenv("APPDIR");
     bool is_appimage = appimage_dir && std::getenv("APPIMAGE");
 #else
+    const char* appimage_dir = NULL;
     constexpr bool is_appimage = false;
 #endif
 
