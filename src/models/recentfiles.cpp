@@ -26,7 +26,7 @@ void RecentFilesModel::update() {
 }
 
 int RecentFilesModel::rowCount(const QModelIndex&) const {
-    return m_recents.size();
+    return static_cast<int>(m_recents.size());
 }
 int RecentFilesModel::columnCount(const QModelIndex&) const { return 1; }
 

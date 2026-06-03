@@ -65,5 +65,5 @@ QVariant SegmentsModel::headerData(int section, Qt::Orientation orientation,
 int SegmentsModel::columnCount(const QModelIndex&) const { return 6; }
 
 int SegmentsModel::rowCount(const QModelIndex&) const {
-    return rd_slice_length(m_segments);
+    return static_cast<int>(rd_slice_length(m_segments));
 }

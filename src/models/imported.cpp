@@ -67,5 +67,5 @@ QVariant ImportedModel::headerData(int section, Qt::Orientation orientation,
 int ImportedModel::columnCount(const QModelIndex&) const { return 5; }
 
 int ImportedModel::rowCount(const QModelIndex&) const {
-    return rd_slice_length(m_imported);
+    return static_cast<int>(rd_slice_length(m_imported));
 }

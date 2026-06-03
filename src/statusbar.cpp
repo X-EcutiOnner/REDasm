@@ -61,7 +61,8 @@ void set_address(ISurface* surface) {
         s += QString{"<b>Function: </b>%1"}.arg(rd_get_name(ctx, funcaddr));
 
         if(funcaddr != *address) {
-            int diff = qMax(funcaddr, *address) - qMin(funcaddr, *address);
+            int diff = static_cast<int>(qMax(funcaddr, *address) -
+                                        qMin(funcaddr, *address));
 
             if(*address < funcaddr)
                 s += "-";

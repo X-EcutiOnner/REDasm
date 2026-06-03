@@ -20,25 +20,46 @@ void on_log(RDLogLevel level, const char* tag, const char* msg,
 }
 
 void configure_searchpaths() {
-    const char* appdir = std::getenv("APPDIR");
-    bool isappimage = appdir && std::getenv("APPIMAGE");
+#if !defined(_WIN32)
+    const char* appimage_dir = std::getenv("APPDIR");
+    bool is_appimage = appimage_dir && std::getenv("APPIMAGE");
+#else
+    constexpr bool is_appimage = false;
+#endif
 
-    utils::search_paths =
-        QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
+    // clang-format off
+    if(is_appimage) {
+        // 1. user plugins
+        const QString USER_DIR = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+        utils::search_paths.append(USER_DIR + "/plugins");
+        utils::kb_search_paths.append((USER_DIR + "/kb").toUtf8());
 
-    if(isappimage) utils::search_paths.prepend(QString::fromUtf8(appdir));
+        // 2. bundled plugins
+        const QString APP_DIR = QString::fromUtf8(appimage_dir);
+        utils::search_paths.append(APP_DIR + "/usr/lib/redasm/plugins");
+        utils::kb_search_paths.append((APP_DIR + "/usr/share/redasm/kb").toUtf8());
 
-    for(const QString& sp : utils::search_paths)
-        utils::kb_search_paths.prepend((sp + "/kb").toUtf8());
+        // 3. system plugins
+        for(const QString& sp : QStandardPaths::standardLocations(QStandardPaths::AppDataLocation)) {
+            if(sp == USER_DIR) continue; // already added, skip
 
-    // TODO: davide - review this hardcoded path
-    utils::kb_search_paths.prepend(
-        (qApp->applicationDirPath() + "/../../redasm-dev/kb").toUtf8());
+            utils::search_paths.append(sp + "/plugins");
+            utils::kb_search_paths.append((sp + "/kb").toUtf8());
+        }
+    }
+    else {
+        const QString APP_DIR = qApp->applicationDirPath();
 
-    utils::search_paths.prepend(qApp->applicationDirPath() + "/../processors");
-    utils::search_paths.prepend(qApp->applicationDirPath() + "/../loaders");
-    utils::search_paths.prepend(qApp->applicationDirPath() + "/../commands");
-    utils::search_paths.prepend(qApp->applicationDirPath());
+        utils::search_paths.append(APP_DIR + QDir::separator() + "plugins");
+        utils::kb_search_paths.append((APP_DIR + QDir::separator() + "kb").toUtf8());
+
+        for(const QString& sp : QStandardPaths::standardLocations(QStandardPaths::AppDataLocation)) {
+            utils::search_paths.append(sp + QDir::separator() + "plugins");
+            utils::kb_search_paths.append((sp + QDir::separator() + "kb").toUtf8());
+        }
+
+    }
+    // clang-format on
 }
 
 QVector<const char*> get_kb_searchpaths() {

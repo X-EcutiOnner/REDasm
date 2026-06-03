@@ -47,5 +47,5 @@ QVariant MappingsModel::headerData(int section, Qt::Orientation orientation,
 int MappingsModel::columnCount(const QModelIndex&) const { return 4; }
 
 int MappingsModel::rowCount(const QModelIndex&) const {
-    return rd_slice_length(m_mappings);
+    return static_cast<int>(rd_slice_length(m_mappings));
 }

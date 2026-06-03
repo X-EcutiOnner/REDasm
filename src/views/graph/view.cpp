@@ -57,10 +57,10 @@ void GraphView::focus_block(const GraphViewNode* item, bool force) {
     QPoint translation(m_renderoffset.x() - xofs, m_renderoffset.y() - yofs);
 
     // Adjust scaled viewport
-    viewportrect.setWidth(viewportrect.width() / m_scalefactor);
-    viewportrect.setHeight(viewportrect.height() / m_scalefactor);
-    viewportrect.translate(-translation.x() / m_scalefactor,
-                           -translation.y() / m_scalefactor);
+    viewportrect.setWidth(qRound(viewportrect.width() / m_scalefactor));
+    viewportrect.setHeight(qRound(viewportrect.height() / m_scalefactor));
+    viewportrect.translate(qRound(-translation.x() / m_scalefactor),
+                           qRound(-translation.y() / m_scalefactor));
 
     QFontMetrics fm = this->fontMetrics();
 
@@ -76,12 +76,12 @@ void GraphView::focus_block(const GraphViewNode* item, bool force) {
                  m_scalefactor;
 
         this->horizontalScrollBar()->setValue(
-            x + m_renderoffset.x() -
-            (this->horizontalScrollBar()->pageStep() / 2.0));
+            qRound(x + m_renderoffset.x() -
+                   (this->horizontalScrollBar()->pageStep() / 2.0)));
 
         this->verticalScrollBar()->setValue(
-            y + m_renderoffset.y() -
-            (this->verticalScrollBar()->pageStep() / 2.0));
+            qRound(y + m_renderoffset.y() -
+                   (this->verticalScrollBar()->pageStep() / 2.0)));
     }
 }
 
@@ -213,10 +213,10 @@ void GraphView::paintEvent(QPaintEvent*) {
     };
 
     // Adjust imaginary viewport rect at new zoom level
-    vpr.setWidth(vpr.width() / m_scalefactor);
-    vpr.setHeight(vpr.height() / m_scalefactor);
-    vpr.translate(-translation.x() / m_scalefactor,
-                  -translation.y() / m_scalefactor);
+    vpr.setWidth(qRound(vpr.width() / m_scalefactor));
+    vpr.setHeight(qRound(vpr.height() / m_scalefactor));
+    vpr.translate(qRound(-translation.x() / m_scalefactor),
+                  qRound(-translation.y() / m_scalefactor));
 
     // Render edges
     painter.save();

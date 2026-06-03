@@ -96,7 +96,8 @@ void ContextView::check_status() {
                 .arg(m_status.step)
                 .arg(m_status.pending_calls)
                 .arg(m_status.pending_jumps)
-                .arg(m_status.address.value, m_status.segment->unit * 2, 16,
+                .arg(m_status.address.value,
+                     static_cast<int>(m_status.segment->unit) * 2, 16,
                      QLatin1Char('0')));
     }
     else {

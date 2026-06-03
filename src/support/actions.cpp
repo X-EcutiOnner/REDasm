@@ -186,9 +186,11 @@ void show_details() {
                     strop.append(QString("<b>index:</b> %1<br>")
                                      .arg(rd_to_hexaddr(cv->context(),
                                                         op->displ.index)));
-                    strop.append(QString("<b>displ:</b> %1<br>")
-                                     .arg(rd_to_hexaddr(cv->context(),
-                                                        op->displ.offset)));
+                    strop.append(
+                        QString("<b>displ:</b> %1<br>")
+                            .arg(rd_to_hexaddr(
+                                cv->context(),
+                                static_cast<usize>(op->displ.offset))));
                     break;
                 }
 

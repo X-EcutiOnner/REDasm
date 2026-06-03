@@ -73,7 +73,7 @@ void DecoderDialog::do_decode() { // NOLINT
     m_ui.ptedecoded->clear();
 
     const QHexDocument* doc = m_ui.hexview->hexDocument();
-    QByteArray ba = doc->read(0, doc->length());
+    QByteArray ba = doc->read(0, static_cast<int>(doc->length()));
     const char* p = ba.data();
     auto len = static_cast<usize>(ba.length());
 

@@ -53,5 +53,5 @@ QVariant ExportedModel::headerData(int section, Qt::Orientation orientation,
 int ExportedModel::columnCount(const QModelIndex&) const { return 3; }
 
 int ExportedModel::rowCount(const QModelIndex&) const {
-    return rd_slice_length(m_exported);
+    return static_cast<int>(rd_slice_length(m_exported));
 }

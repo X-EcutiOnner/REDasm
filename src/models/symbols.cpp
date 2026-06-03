@@ -106,7 +106,7 @@ int SymbolsModel::columnCount(const QModelIndex&) const {
 }
 
 int SymbolsModel::rowCount(const QModelIndex&) const {
-    return rd_slice_length(m_symbols);
+    return static_cast<int>(rd_slice_length(m_symbols));
 }
 
 QString SymbolsModel::get_symbol_kind(u32 t) const {

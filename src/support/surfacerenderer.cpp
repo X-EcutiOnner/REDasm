@@ -12,7 +12,7 @@ qreal g_cell_w = 0;
 qreal g_cell_h = 0;
 
 void render_row(QPainter* p, RDRowSlice row, qreal y) {
-    for(usize j = 0; j < rd_slice_length(row); j++) {
+    for(int j = 0; j < static_cast<int>(rd_slice_length(row)); j++) {
         RDCell c = rd_slice_at(row, j);
         QColor fg = theme_provider::color(c.fg);
         QColor bg = theme_provider::color(c.bg);
@@ -54,7 +54,7 @@ void render(QPainter* p, RDSurface* surface, usize start, usize n) {
 
     for(usize i = 0; i < n; i++) {
         RDRowSlice row = rd_surface_get_row(surface, start + i);
-        qreal y = i * surface_renderer::g_cell_h;
+        qreal y = static_cast<qreal>(i) * surface_renderer::g_cell_h;
 
         for(usize j = 0; j < rd_slice_length(row); j++) {
             RDCell c = rd_slice_at(row, j);
@@ -64,7 +64,7 @@ void render(QPainter* p, RDSurface* surface, usize start, usize n) {
             Q_ASSERT(fg.isValid());
             Q_ASSERT(bg.isValid());
 
-            QRectF r(j * g_cell_w, y, g_cell_w, g_cell_h);
+            QRectF r(static_cast<qreal>(j) * g_cell_w, y, g_cell_w, g_cell_h);
 
             p->fillRect(r, bg);
             p->setPen(fg);
@@ -78,7 +78,7 @@ void render_block(QPainter* p, RDSurfaceGraph* surface, usize start, usize n) {
 
     for(usize i = 0; i < n; i++) {
         RDRowSlice row = rd_surfacegraph_get_row(surface, start + i);
-        qreal y = i * surface_renderer::g_cell_h;
+        qreal y = static_cast<qreal>(i) * surface_renderer::g_cell_h;
         surface_renderer::render_row(p, row, y);
     }
 }

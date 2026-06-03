@@ -77,5 +77,5 @@ QVariant ReferencesModel::headerData(int section, Qt::Orientation orientation,
 int ReferencesModel::columnCount(const QModelIndex&) const { return 4; }
 
 int ReferencesModel::rowCount(const QModelIndex&) const {
-    return rd_slice_length(m_refs);
+    return static_cast<int>(rd_slice_length(m_refs));
 }

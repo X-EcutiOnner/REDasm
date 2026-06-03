@@ -47,5 +47,5 @@ QVariant FunctionsModel::headerData(int section, Qt::Orientation orientation,
 int FunctionsModel::columnCount(const QModelIndex&) const { return 1; }
 
 int FunctionsModel::rowCount(const QModelIndex&) const {
-    return rd_slice_length(m_functions);
+    return static_cast<int>(rd_slice_length(m_functions));
 }

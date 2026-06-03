@@ -33,14 +33,16 @@ void SurfacePath::paintEvent(QPaintEvent* event) {
     for(usize i = 0; i < rd_slice_length(path); i++, x -= W) {
         const RDSurfacePathItem* p = &rd_slice_at(path, i);
 
-        int y1 = (p->from_row * H) + (H / 2);
-        int y2 = (qMin(p->to_row, NROWS + 1) * H) + (H / 2);
-        int y = (qMin(p->to_row, NROWS + 1) * H);
+        qreal y1 = (p->from_row * H) + (H / 2);
+        qreal y2 = (qMin(p->to_row, NROWS + 1) * H) + (H / 2);
+        qreal y = (qMin(p->to_row, NROWS + 1) * H);
 
         QVector<QLine> points;
-        points.push_back(QLine(this->width(), y1, x, y1));
-        points.push_back(QLine(x, y1, x, y2));
-        points.push_back(QLine(x, y2, this->width(), y2));
+        points.push_back(
+            QLine(this->width(), qRound(y1), qRound(x), qRound(y1)));
+        points.push_back(QLine(qRound(x), qRound(y1), qRound(x), qRound(y2)));
+        points.push_back(
+            QLine(qRound(x), qRound(y2), this->width(), qRound(y2)));
 
         qreal penwidth = this->is_path_selected(p) ? 3 : 2;
 
@@ -66,7 +68,7 @@ void SurfacePath::paintEvent(QPaintEvent* event) {
 
         painter.setPen(
             QPen{theme_provider::color(p->style), penwidth, Qt::SolidLine});
-        this->fill_arrow(&painter, y2);
+        this->fill_arrow(&painter, qRound(y2));
     }
 }
 
@@ -76,8 +78,8 @@ bool SurfacePath::is_path_selected(const RDSurfacePathItem* p) const {
 }
 
 void SurfacePath::fill_arrow(QPainter* painter, int y) {
-    const int W = surface_renderer::cell_width() / 2;
-    const int HL = surface_renderer::cell_height() / 3;
+    const int W = qRound(surface_renderer::cell_width() / 2);
+    const int HL = qRound(surface_renderer::cell_height() / 3);
 
     QPainterPath path;
     path.moveTo(QPoint{this->width() - W, y});

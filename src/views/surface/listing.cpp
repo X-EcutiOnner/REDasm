@@ -226,8 +226,9 @@ void SurfaceListing::paintEvent(QPaintEvent* e) {
         return;
     }
 
-    rd_surface_seek(m_surface, this->verticalScrollBar()->value());
-    rd_surface_render(m_surface, this->visible_rows());
+    rd_surface_seek(m_surface,
+                    static_cast<usize>(this->verticalScrollBar()->value()));
+    rd_surface_render(m_surface, static_cast<usize>(this->visible_rows()));
 
     QPainter p{this->viewport()};
     surface_renderer::render(&p, m_surface, 0,
@@ -311,7 +312,8 @@ bool SurfaceListing::follow_under_cursor() {
 }
 
 void SurfaceListing::update_scrollbars() {
-    this->verticalScrollBar()->setRange(0, this->get_length());
+    this->verticalScrollBar()->setRange(0,
+                                        static_cast<int>(this->get_length()));
 }
 
 void SurfaceListing::sync_location() {
@@ -319,7 +321,7 @@ void SurfaceListing::sync_location() {
     auto oldvalue = static_cast<usize>(this->verticalScrollBar()->value());
 
     if(oldvalue != currindex)
-        this->verticalScrollBar()->setValue(currindex);
+        this->verticalScrollBar()->setValue(static_cast<int>(currindex));
     else
         this->viewport()->update();
 }

@@ -68,8 +68,8 @@ void SurfacePopup::render() {
         len = qMax(len, row.length);
     }
 
-    this->resize(qFloor(len * surface_renderer::cell_width()),
-                 qFloor(n * surface_renderer::cell_height()));
+    this->resize(qFloor(static_cast<int>(len) * surface_renderer::cell_width()),
+                 qFloor(static_cast<int>(n) * surface_renderer::cell_height()));
 
     this->update();
 }

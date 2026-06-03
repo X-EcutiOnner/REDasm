@@ -28,5 +28,5 @@ private:
     RDContext* m_context;
     RDSurface* m_surface;
     QPointF m_lastpos;
-    int m_nrows{N_ROWS};
+    usize m_nrows{N_ROWS};
 };

@@ -83,8 +83,9 @@ void SurfaceGraphNode::update_metrics() {
 
     m_maxwidth = 0;
     for(int i = s; i <= e; i++) {
-        RDRowSlice row = rd_surfacegraph_get_row(m_surface, i);
-        m_maxwidth = qMax(m_maxwidth, static_cast<int>(row.content_length));
+        RDRowSlice row =
+            rd_surfacegraph_get_row(m_surface, static_cast<usize>(i));
+        m_maxwidth = qMax(m_maxwidth, row.content_length);
     }
 }
 
@@ -131,7 +132,9 @@ void SurfaceGraphNode::render(QPainter* painter, usize state) {
     if(s != -1 && e != -1) {
         painter->save();
         painter->setClipRect(r);
-        surface_renderer::render_block(painter, m_surface, s, e - s + 1);
+        surface_renderer::render_block(painter, m_surface,
+                                       static_cast<usize>(s),
+                                       static_cast<usize>(e - s) + 1);
         painter->restore();
     }
 

@@ -53,5 +53,5 @@ QVariant ProblemsModel::headerData(int section, Qt::Orientation orientation,
 int ProblemsModel::columnCount(const QModelIndex&) const { return 3; }
 
 int ProblemsModel::rowCount(const QModelIndex&) const {
-    return m_problems.length;
+    return static_cast<int>(m_problems.length);
 }

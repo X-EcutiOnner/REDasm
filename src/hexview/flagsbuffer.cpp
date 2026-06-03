@@ -9,12 +9,12 @@ const RDFlagsBuffer* FlagsBuffer::flags() const { return m_flags; }
 quint64 FlagsBuffer::base_address() const { return m_segment->start_address; }
 
 qint64 FlagsBuffer::length() const {
-    return rd_flagsbuffer_get_length(m_flags);
+    return static_cast<qint64>(rd_flagsbuffer_get_length(m_flags));
 }
 
 bool FlagsBuffer::accept(qint64 idx) const {
     return idx < this->length() &&
-           rd_flagsbuffer_get_value(m_flags, idx, nullptr);
+           rd_flagsbuffer_get_value(m_flags, static_cast<usize>(idx), nullptr);
 }
 
 void FlagsBuffer::insert(qint64 /*offset*/, const QByteArray& /*data*/) {}
@@ -27,8 +27,9 @@ QByteArray FlagsBuffer::read(qint64 offset, int length) {
     for(qint64 i = 0; i < qMin<qint64>(length, this->length()); i++) {
         u8 b;
 
-        if(rd_flagsbuffer_get_value(m_flags, offset + i, &b))
-            data.push_back(b);
+        if(rd_flagsbuffer_get_value(m_flags, static_cast<usize>(offset + i),
+                                    &b))
+            data.push_back(static_cast<char>(b));
         else
             data.push_back(u8{0});
     }
