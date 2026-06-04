@@ -134,4 +134,5 @@ install(FILES res/redasm.desktop
 
 install(FILES res/logo.png
     DESTINATION share/icons/hicolor/256x256/apps
+    RENAME redasm.png
 )
