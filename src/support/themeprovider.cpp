@@ -125,8 +125,6 @@ QIcon icon(const QString& name) {
     return QIcon(QString(":/res/%1/%2.png")
                      .arg(theme_provider::is_dark_theme() ? "dark" : "light")
                      .arg(name));
-
-    return {};
 }
 
 void apply_theme() {
