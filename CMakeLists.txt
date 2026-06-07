@@ -6,10 +6,6 @@ if(NOT TARGET redasm::redasm)
     find_package(redasm REQUIRED)
 endif()
 
-if(MSVC AND CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_compile_options(/fsanitize=address)
-endif()
-
 include(cmake/Dependencies.cmake)
 setup_dependencies()
 
