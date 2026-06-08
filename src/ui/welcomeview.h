@@ -18,10 +18,9 @@ struct WelcomeView {
     QPushButton* pbopen;
     QPushButton* pbsettings;
     QPushButton* pbabout;
-    QPushButton* pbopenreddit;
     QPushButton* pbopenhome;
     QPushButton* pbopengithub;
-    QPushButton* pbopentelegram;
+    QPushButton* pbopendiscord;
     QPushButton* pbopenx;
     QLabel* lblrecents;
     QLabel* lblbrand;
@@ -100,14 +99,11 @@ struct WelcomeView {
         this->pbopengithub = new QPushButton(self);
         grid->addWidget(this->pbopengithub, 1, 0, 1, 1);
 
-        this->pbopentelegram = new QPushButton(self);
-        grid->addWidget(this->pbopentelegram, 2, 0, 1, 1);
-
-        this->pbopenreddit = new QPushButton(self);
-        grid->addWidget(this->pbopenreddit, 3, 0, 1, 1);
+        this->pbopendiscord = new QPushButton(self);
+        grid->addWidget(this->pbopendiscord, 2, 0, 1, 1);
 
         this->pbopenx = new QPushButton(self);
-        grid->addWidget(this->pbopenx, 4, 0, 1, 1);
+        grid->addWidget(this->pbopenx, 3, 0, 1, 1);
 
         hbox1->addLayout(grid);
         hbox1->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding,

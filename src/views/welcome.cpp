@@ -49,8 +49,7 @@ WelcomeView::WelcomeView(QWidget* parent): DashboardView{parent}, m_ui{this} {
 
     style_social_button(m_ui.pbopenhome, actions::OPEN_HOME);
     style_social_button(m_ui.pbopenx, actions::OPEN_X);
-    style_social_button(m_ui.pbopentelegram, actions::OPEN_TELEGRAM);
-    style_social_button(m_ui.pbopenreddit, actions::OPEN_REDDIT);
+    style_social_button(m_ui.pbopendiscord, actions::OPEN_DISCORD);
     style_social_button(m_ui.pbopengithub, actions::OPEN_GITHUB);
     bind_button_to_action(m_ui.pbsettings, actions::OPEN_SETTINGS);
     bind_button_to_action(m_ui.pbabout, actions::OPEN_ABOUT);

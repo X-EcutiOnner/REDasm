@@ -401,14 +401,9 @@ void init(QMainWindow* mw) {
             QDesktopServices::openUrl(QUrl{"https://redasm.dev"});
         });
 
-    g_actions[Type::OPEN_TELEGRAM] =
-        mw->addAction(FAB_ICON(0xf2c6), "Telegram", mw, []() {
-            QDesktopServices::openUrl(QUrl{"https://t.me/REDasmDisassembler"});
-        });
-
-    g_actions[Type::OPEN_REDDIT] =
-        mw->addAction(FAB_ICON(0xf281), "Reddit", mw, []() {
-            QDesktopServices::openUrl(QUrl{"https://reddit.com/r/REDasm"});
+    g_actions[Type::OPEN_DISCORD] =
+        mw->addAction(FAB_ICON(0xf392), "Discord", mw, []() {
+            QDesktopServices::openUrl(QUrl{"https://discord.redasm.dev"});
         });
 
     g_actions[Type::OPEN_X] = mw->addAction(FAB_ICON(0xe61b), "X", mw, []() {
@@ -418,7 +413,7 @@ void init(QMainWindow* mw) {
     g_actions[Type::OPEN_GITHUB] =
         mw->addAction(FAB_ICON(0xf113), "Report an Issue", mw, []() {
             QDesktopServices::openUrl(
-                QUrl{"https://github.com/REDasmOrg/REDasm/issues"});
+                QUrl{"https://github.com/redasm-dev/redasm/issues"});
         });
 
     g_actions[Type::OPEN_ABOUT] = mw->addAction("&About", mw, []() {

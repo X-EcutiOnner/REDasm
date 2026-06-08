@@ -19,8 +19,7 @@ enum Type : quint8 {
     OPEN_DETAILS,
 
     OPEN_HOME,
-    OPEN_TELEGRAM,
-    OPEN_REDDIT,
+    OPEN_DISCORD,
     OPEN_X,
     OPEN_GITHUB,
 
