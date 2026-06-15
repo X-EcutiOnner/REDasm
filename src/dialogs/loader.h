@@ -8,12 +8,14 @@ class LoaderDialog: public QDialog {
     Q_OBJECT
 
 public:
-    explicit LoaderDialog(RDContextSlice ctxslice, QWidget* parent = nullptr);
+    explicit LoaderDialog(RDTestResultSlice ctxslice,
+                          QWidget* parent = nullptr);
 
 private Q_SLOTS:
     void on_loader_changed(int currentrow);
     void on_processor_changed(int currentrow);
     void update_min_string();
+    void update_open_mode();
     void update_entry_point();
     void update_address();
     void update_offset();
@@ -23,11 +25,10 @@ private:
     void populate_processors() const;
 
 public:
-    RDContext* context;
-    const RDProcessorPlugin* processorplugin{nullptr};
-    RDLoadAddressing addressing{};
+    const RDTestResult* sel_test{nullptr};
+    RDAcceptParams accept_params{};
 
 private:
     ui::LoaderDialog m_ui;
-    RDContextSlice m_contextslice{};
+    RDTestResultSlice m_testslice{};
 };

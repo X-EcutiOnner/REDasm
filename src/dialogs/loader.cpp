@@ -2,11 +2,13 @@
 #include "support/utils.h"
 #include <QPushButton>
 
-LoaderDialog::LoaderDialog(RDContextSlice ctxslice, QWidget* parent)
-    : QDialog{parent}, m_ui{this}, m_contextslice{ctxslice} {
+LoaderDialog::LoaderDialog(RDTestResultSlice ctxslice, QWidget* parent)
+    : QDialog{parent}, m_ui{this}, m_testslice{ctxslice} {
     utils::configure_hex_input(m_ui.leentrypoint);
     utils::configure_hex_input(m_ui.leaddress);
     utils::configure_hex_input(m_ui.leoffset);
+
+    this->accept_params.min_string = RD_MIN_STRING_LENGTH;
 
     m_ui.gbaddressing->setEnabled(false);
     m_ui.leentrypoint->setText(QString{"0"}.repeated(sizeof(u32) * 2));
@@ -15,9 +17,9 @@ LoaderDialog::LoaderDialog(RDContextSlice ctxslice, QWidget* parent)
 
     this->populate_processors();
 
-    for(usize i = 0; i < rd_slice_length(m_contextslice); i++) {
+    for(usize i = 0; i < rd_slice_length(m_testslice); i++) {
         const char* ldr_name =
-            rd_get_loader_name(rd_slice_at(m_contextslice, i));
+            rd_testresult_get_loader_name(rd_slice_at(m_testslice, i));
         m_ui.lwloaders->addItem(QString::fromUtf8(ldr_name));
     }
 
@@ -30,6 +32,15 @@ LoaderDialog::LoaderDialog(RDContextSlice ctxslice, QWidget* parent)
     connect(m_ui.sbminstring, &QSpinBox::valueChanged, this,
             &LoaderDialog::update_min_string);
 
+    connect(m_ui.rbnewanalysis, &QRadioButton::clicked, this,
+            &LoaderDialog::update_open_mode);
+
+    connect(m_ui.rbopenproject, &QRadioButton::clicked, this,
+            &LoaderDialog::update_open_mode);
+
+    connect(m_ui.rbresumesession, &QRadioButton::clicked, this,
+            &LoaderDialog::update_open_mode);
+
     connect(m_ui.leentrypoint, &QLineEdit::textChanged, this,
             &LoaderDialog::update_entry_point);
 
@@ -40,20 +51,24 @@ LoaderDialog::LoaderDialog(RDContextSlice ctxslice, QWidget* parent)
             &LoaderDialog::update_offset);
 
     // Trigger "on_loader_changed"
-    if(!rd_slice_is_empty(m_contextslice)) m_ui.lwloaders->setCurrentRow(0);
+    if(!rd_slice_is_empty(m_testslice)) m_ui.lwloaders->setCurrentRow(0);
 
     this->validate_fields();
+    this->update_open_mode();
 }
 
 void LoaderDialog::on_loader_changed(int currentrow) {
     if(currentrow != -1) {
-        this->context = rd_slice_at(m_contextslice, currentrow);
-        m_ui.sbminstring->setValue(rd_get_min_string(this->context));
+        this->sel_test = rd_slice_at(m_testslice, currentrow);
+        m_ui.sbminstring->setValue(RD_MIN_STRING_LENGTH);
 
-        const RDLoaderPlugin* l = rd_get_loader_plugin(this->context);
-        const RDProcessorPlugin* p = rd_get_processor_plugin(this->context);
+        const RDLoaderPlugin* l =
+            rd_testresult_get_loader_plugin(this->sel_test);
+        const RDProcessorPlugin* p =
+            rd_testresult_get_processor_plugin(this->sel_test);
 
-        m_ui.gbaddressing->setEnabled(l->flags & RD_LF_MANUAL);
+        m_ui.gbaddressing->setEnabled(m_ui.rbnewanalysis->isChecked() &&
+                                      (l->flags & RD_LF_MANUAL));
 
         for(int i = 0; i < m_ui.cbprocessors->count(); i++) {
             if(m_ui.cbprocessors->itemData(i).toString() == p->id) {
@@ -66,7 +81,7 @@ void LoaderDialog::on_loader_changed(int currentrow) {
     }
     else {
         m_ui.gbaddressing->setEnabled(false);
-        this->context = nullptr;
+        this->sel_test = nullptr;
     }
 
     this->validate_fields();
@@ -77,10 +92,11 @@ void LoaderDialog::on_processor_changed(int currentrow) {
 
     if(loaderidx != -1 && currentrow != -1) {
         QVariant d = m_ui.cbprocessors->itemData(currentrow);
-        this->processorplugin = rd_processor_find(qUtf8Printable(d.toString()));
+        this->accept_params.processorplugin =
+            rd_processor_find(qUtf8Printable(d.toString()));
     }
     else
-        this->processorplugin = nullptr;
+        this->accept_params.processorplugin = nullptr;
 
     this->validate_fields();
 }
@@ -95,37 +111,53 @@ void LoaderDialog::populate_processors() const {
     }
 }
 
-void LoaderDialog::update_min_string() { // NOLINT
-    if(!this->context) return;
-    rd_set_min_string(this->context, m_ui.sbminstring->value());
+void LoaderDialog::update_min_string() {
+    this->accept_params.min_string = m_ui.sbminstring->value();
+}
+
+void LoaderDialog::update_open_mode() {
+    if(m_ui.rbnewanalysis->isChecked())
+        this->accept_params.mode = RD_AM_NEW;
+    else if(m_ui.rbopenproject->isChecked())
+        this->accept_params.mode = RD_AM_PROJECT;
+    else if(m_ui.rbresumesession->isChecked())
+        this->accept_params.mode = RD_AM_DATABASE;
+    else
+        qFatal("cannot set an open mode");
+
+    m_ui.gbloader->setEnabled(m_ui.rbnewanalysis->isChecked() ||
+                              m_ui.rbresumesession->isChecked());
+
+    m_ui.gbaddressing->setEnabled(m_ui.rbnewanalysis->isChecked());
 }
 
 void LoaderDialog::update_entry_point() {
-    this->addressing.entrypoint =
+    this->accept_params.addressing.entrypoint =
         m_ui.leentrypoint->text().toULongLong(nullptr, 16);
     this->validate_fields();
 }
 
 void LoaderDialog::update_address() {
-    this->addressing.address =
+    this->accept_params.addressing.address =
         m_ui.leentrypoint->text().toULongLong(nullptr, 16);
     this->validate_fields();
 }
 
 void LoaderDialog::update_offset() {
-    this->addressing.offset = m_ui.leoffset->text().toULongLong(nullptr, 16);
+    this->accept_params.addressing.offset =
+        m_ui.leoffset->text().toULongLong(nullptr, 16);
     this->validate_fields();
 }
 
 void LoaderDialog::validate_fields() { // NOLINT
     QPushButton* pb = m_ui.buttonbox->button(QDialogButtonBox::Ok);
 
-    if(!this->context || m_ui.cbprocessors->currentIndex() == -1) {
+    if(!this->sel_test || m_ui.cbprocessors->currentIndex() == -1) {
         pb->setEnabled(false);
         return;
     }
 
-    const RDLoaderPlugin* l = rd_get_loader_plugin(this->context);
+    const RDLoaderPlugin* l = rd_testresult_get_loader_plugin(this->sel_test);
 
     if(l->flags & RD_LF_MANUAL) {
         pb->setEnabled(!m_ui.leentrypoint->text().isEmpty() &&

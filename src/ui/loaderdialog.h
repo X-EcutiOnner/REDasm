@@ -10,15 +10,17 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QListWidget>
+#include <QRadioButton>
 #include <QSpinBox>
 
 namespace ui {
 
 struct LoaderDialog {
     QListWidget* lwloaders;
-    QGroupBox *gboptions, *gbloader, *gbaddressing;
+    QGroupBox *gbloader, *gbopenmode, *gbaddressing;
     QComboBox* cbprocessors;
     QSpinBox* sbminstring;
+    QRadioButton *rbnewanalysis, *rbresumesession, *rbopenproject;
     QLineEdit *leentrypoint, *leoffset, *leaddress;
     QDialogButtonBox* buttonbox;
 
@@ -61,6 +63,9 @@ private:
     }
 
     void setup_loader_part(QVBoxLayout* l) {
+        auto* hbox = new QHBoxLayout();
+
+        // left part
         this->gbloader = new QGroupBox();
         this->gbloader->setTitle("Loader");
 
@@ -74,7 +79,30 @@ private:
         form->setLabelAlignment(Qt::AlignRight);
         form->addRow("Processor:", this->cbprocessors);
         form->addRow("Min String:", this->sbminstring);
-        l->addWidget(this->gbloader);
+
+        // right part
+        this->gbopenmode = new QGroupBox();
+        this->gbopenmode->setTitle("Open Mode");
+
+        this->rbnewanalysis = new QRadioButton();
+        this->rbnewanalysis->setText("New analysis");
+        this->rbnewanalysis->setChecked(true);
+
+        this->rbopenproject = new QRadioButton();
+        this->rbopenproject->setText("Load project");
+
+        this->rbresumesession = new QRadioButton();
+        this->rbresumesession->setText("Resume session");
+
+        auto* vbox = new QVBoxLayout(this->gbopenmode);
+        vbox->addWidget(this->rbnewanalysis);
+        vbox->addWidget(this->rbopenproject);
+        vbox->addWidget(this->rbresumesession);
+
+        hbox->addWidget(this->gbloader, 1);
+        hbox->addWidget(this->gbopenmode);
+
+        l->addLayout(hbox);
     }
 
     void setup_addressing_part(QVBoxLayout* l) {

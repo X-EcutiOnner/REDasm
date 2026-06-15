@@ -316,7 +316,7 @@ void MainWindow::open_file(const QString& filepath) {
 
     m_filepath = filepath;
 
-    RDContextSlice ctxslice = rd_test(qUtf8Printable(m_filepath));
+    RDTestResultSlice ctxslice = rd_test(qUtf8Printable(m_filepath));
     if(rd_slice_is_empty(ctxslice)) return;
 
     REDasmSettings settings;
@@ -326,12 +326,33 @@ void MainWindow::open_file(const QString& filepath) {
     auto* dlgloader = new LoaderDialog(ctxslice, this);
 
     connect(dlgloader, &LoaderDialog::accepted, this, [&, dlgloader]() {
-        if(rd_accept(dlgloader->context, dlgloader->processorplugin,
-                     &dlgloader->addressing))
-            this->select_analyzers(dlgloader->context);
-        else {
-            rd_destroy(dlgloader->context);
-            QMessageBox::warning(this, "Loader", "Loading aborted");
+        QByteArray dbpath;
+
+        while(true) {
+            RDAcceptResult res =
+                rd_accept(dlgloader->sel_test, &dlgloader->accept_params);
+
+            switch(res.status) {
+                case RD_ACCEPT_OK: this->select_analyzers(res.context); return;
+
+                case RD_ACCEPT_FAIL:
+                    QMessageBox::warning(this, "Loader", "Loading aborted");
+                    return;
+
+                case RD_ACCEPT_FAIL_WRITE: {
+                    QString newpath = QFileDialog::getExistingDirectory(
+                        this, tr("DB is not writable, select a directory..."));
+
+                    if(newpath.isEmpty()) {
+                        rd_reject();
+                        return;
+                    }
+
+                    dbpath = newpath.toUtf8();
+                    dlgloader->accept_params.db_path = dbpath.constData();
+                    break;
+                }
+            }
         }
     });
 
