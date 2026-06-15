@@ -7,6 +7,14 @@
   [![X](https://img.shields.io/badge/@re__dasm-black?style=flat-square&logo=x)](https://twitter.com/re_dasm)
 
 </div>
+
+<div align="center">
+  
+  [![CI](https://github.com/redasm-dev/workspace/actions/workflows/ci.yml/badge.svg)](https://github.com/redasm-dev/workspace/actions/workflows/ci.yml)
+  [![Nightly](https://github.com/redasm-dev/workspace/actions/workflows/nightly.yml/badge.svg)](https://github.com/redasm-dev/workspace/actions/workflows/nightly.yml)
+  
+</div>
+
 <hr>
 
 A free and open source disassembler designed for both hobbyists and professional reverse engineers.  
