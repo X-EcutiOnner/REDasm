@@ -61,6 +61,7 @@ QString to_hex(RDAddress address, const RDSegment* seg) {
 
 QString confidence_text(RDConfidence c) {
     switch(c) {
+        case RD_CONFIDENCE_PLACEHOLDER: return "PLACEHOLDER";
         case RD_CONFIDENCE_AUTO: return "AUTO";
         case RD_CONFIDENCE_LIBRARY: return "LIBRARY";
         case RD_CONFIDENCE_USER: return "USER";
