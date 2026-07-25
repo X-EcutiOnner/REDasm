@@ -4,14 +4,20 @@
 
 namespace {
 
-QColor get_foreground_color(const RDSymbol& sym) {
+QColor _get_foreground_color(const RDSymbol& sym) {
     switch(sym.kind) {
         case RD_SYMBOL_SEGMENT: return theme_provider::color(RD_THEME_SEGMENT);
 
         case RD_SYMBOL_FUNCTION:
             return theme_provider::color(RD_THEME_FUNCTION);
 
-        case RD_SYMBOL_TYPE: return theme_provider::color(RD_THEME_TYPE);
+        case RD_SYMBOL_TYPE: {
+            if(rd_type_is_string(&sym.type))
+                return theme_provider::color(RD_THEME_STRING);
+
+            return theme_provider::color(RD_THEME_TYPE);
+        }
+
         default: break;
     }
 
@@ -79,7 +85,7 @@ QVariant SymbolsModel::data(const QModelIndex& index, int role) const {
         if(m_highlightaddress && index.column() == 0)
             return theme_provider::color(RD_THEME_LOCATION);
         if(m_highlightsymbol && index.column() == 2)
-            return get_foreground_color(sym);
+            return _get_foreground_color(sym);
     }
     else if(role == Qt::UserRole)
         return QVariant::fromValue(sym.kind);
