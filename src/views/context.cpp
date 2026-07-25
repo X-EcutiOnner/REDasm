@@ -67,12 +67,9 @@ void ContextView::schedule_step() {
                 this->check_status();
                 return;
             }
-
-            if(m_status.is_listing_changed) break; // yield
         }
 
-        bool notify = m_status.is_listing_changed ||
-                      m_notify_timer.elapsed() >= NOTIFY_INTERVAL_MS;
+        bool notify = m_notify_timer.elapsed() >= NOTIFY_INTERVAL_MS;
 
         if(notify) {
             m_notify_timer.restart();
@@ -84,10 +81,8 @@ void ContextView::schedule_step() {
 }
 
 void ContextView::check_status() {
-    if(m_status.is_listing_changed) {
-        m_functionsmodel->resync();
-        m_ui.splitview->surface()->invalidate();
-    }
+    m_functionsmodel->resync();
+    m_ui.splitview->surface()->invalidate();
 
     if(!m_status.is_busy) {
         statusbar::set_ready_status();
