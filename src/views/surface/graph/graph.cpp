@@ -72,12 +72,22 @@ void SurfaceGraph::set_mode(RDRenderMode m) {
     this->invalidate();
 }
 
-void SurfaceGraph::set_position(int row, int col) {
-    if(rd_surfacegraph_set_pos(m_surface, row, col)) this->invalidate();
+bool SurfaceGraph::set_position(int row, int col) {
+    if(rd_surfacegraph_set_pos(m_surface, row, col)) {
+        this->invalidate();
+        return true;
+    }
+
+    return false;
 }
 
-void SurfaceGraph::select(int row, int col) {
-    if(rd_surfacegraph_select(m_surface, row, col)) this->invalidate();
+bool SurfaceGraph::select(int row, int col) {
+    if(rd_surfacegraph_select(m_surface, row, col)) {
+        this->invalidate();
+        return true;
+    }
+
+    return false;
 }
 
 bool SurfaceGraph::go_back() {
@@ -172,8 +182,18 @@ GraphViewNode* SurfaceGraph::create_node(RDGraphNode n, const RDGraph*) {
 
 void SurfaceGraph::keyPressEvent(QKeyEvent* e) {
     if(!utils::handle_key_press(this, e)) {
-        if(e->key() == Qt::Key_Space)
+        RDSurfacePos pos = this->get_position();
+        auto [row, col] = pos;
+
+        if(e->matches(QKeySequence::MoveToNextLine)) {
+            this->set_position(row + 1, col);
+        }
+        else if(e->matches(QKeySequence::MoveToPreviousLine)) {
+            if(row > 0) this->set_position(row - 1, col);
+        }
+        else if(e->key() == Qt::Key_Space) {
             Q_EMIT switch_view();
+        }
         else
             GraphView::keyPressEvent(e);
 

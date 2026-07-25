@@ -107,12 +107,12 @@ void SurfaceListing::set_mode(RDRenderMode m) {
     this->viewport()->update();
 }
 
-void SurfaceListing::set_position(int row, int col) {
-    rd_surface_set_pos(m_surface, row, col);
+bool SurfaceListing::set_position(int row, int col) {
+    return rd_surface_set_pos(m_surface, row, col);
 }
 
-void SurfaceListing::select(int row, int col) {
-    rd_surface_select(m_surface, row, col);
+bool SurfaceListing::select(int row, int col) {
+    return rd_surface_select(m_surface, row, col);
 }
 
 bool SurfaceListing::go_back() {
@@ -239,10 +239,25 @@ void SurfaceListing::wheelEvent(QWheelEvent* e) {
 
 void SurfaceListing::keyPressEvent(QKeyEvent* e) {
     if(!utils::handle_key_press(this, e)) {
-        QScrollBar64* vscroll = this->verticalScrollBar();
         auto [row, col] = this->get_position();
 
-        if(e->matches(QKeySequence::MoveToEndOfLine)) {
+        if(e->matches(QKeySequence::MoveToNextLine)) {
+            if(row + 1 < this->visible_rows()) {
+                this->set_position(row + 1, col);
+            }
+            else {
+                if(!rd_surface_scroll(m_surface, 1)) return;
+            }
+        }
+        else if(e->matches(QKeySequence::MoveToPreviousLine)) {
+            if(row - 1 >= 0) {
+                this->set_position(row - 1, col);
+            }
+            else {
+                if(!rd_surface_scroll(m_surface, -1)) return;
+            }
+        }
+        else if(e->matches(QKeySequence::MoveToEndOfLine)) {
             rd_surface_set_pos(m_surface, row, this->visible_columns());
         }
         else if(e->matches(QKeySequence::MoveToNextPage)) {
@@ -252,12 +267,10 @@ void SurfaceListing::keyPressEvent(QKeyEvent* e) {
             if(!rd_surface_scroll(m_surface, -this->visible_rows())) return;
         }
         else if(e->matches(QKeySequence::MoveToStartOfDocument)) {
-            vscroll->setValue(0);
-            return;
+            rd_surface_set_pos(m_surface, 0, col);
         }
         else if(e->matches(QKeySequence::MoveToEndOfDocument)) {
-            vscroll->setValue(vscroll->value() + this->visible_rows() - 1);
-            return;
+            rd_surface_set_pos(m_surface, this->visible_rows(), col);
         }
         else if(e->matches(QKeySequence::SelectEndOfLine)) {
             rd_surface_select(m_surface, row, this->visible_columns());
@@ -340,7 +353,7 @@ int SurfaceListing::visible_columns() const {
 }
 
 int SurfaceListing::visible_rows() const {
-    return qCeil(this->viewport()->height() / surface_renderer::cell_height());
+    return qFloor(this->viewport()->height() / surface_renderer::cell_height());
 }
 
 RDSurfacePos SurfaceListing::get_surface_coords(QPoint pt) const {

@@ -155,12 +155,6 @@ bool handle_key_press(ISurface* surface, QKeyEvent* e) {
     else if(e->matches(QKeySequence::MoveToPreviousChar)) {
         if(col > 0) surface->set_position(row, col - 1);
     }
-    else if(e->matches(QKeySequence::MoveToNextLine)) {
-        surface->set_position(row + 1, col);
-    }
-    else if(e->matches(QKeySequence::MoveToPreviousLine)) {
-        if(row > 0) surface->set_position(row - 1, col);
-    }
     else if(e->matches(QKeySequence::MoveToStartOfLine)) {
         surface->set_position(row, 0);
     }

@@ -30,8 +30,8 @@ public:
     void jump_to(RDAddress address) override;
     bool invalidate() override;
     void set_mode(RDRenderMode m) override;
-    void set_position(int row, int col) override;
-    void select(int row, int col) override;
+    bool set_position(int row, int col) override;
+    bool select(int row, int col) override;
     // clang-format on
 
 public Q_SLOTS:
