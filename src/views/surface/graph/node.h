@@ -13,6 +13,8 @@ public:
     [[nodiscard]] bool contains_address(RDAddress address) const;
     [[nodiscard]] int current_row() const override;
     [[nodiscard]] QSize size() const override;
+    [[nodiscard]] int start_row() const;
+    [[nodiscard]] int end_row() const;
     void get_surface_pos(const QPointF& pt, RDSurfacePos* pos) const;
     void render(QPainter* painter, usize state) override;
     void update_metrics();
@@ -23,8 +25,6 @@ protected:
     void mousemove_event(QMouseEvent* e) override;
 
 private:
-    [[nodiscard]] int start_row() const;
-    [[nodiscard]] int end_row() const;
     void draw_shadow(QPainter* painter, const QRect& r, bool selected);
 
 Q_SIGNALS:

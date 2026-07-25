@@ -32,6 +32,7 @@ public:
     void set_mode(RDRenderMode m) override;
     bool set_position(int row, int col) override;
     bool select(int row, int col) override;
+    bool select_all() override;
     // clang-format on
 
 public Q_SLOTS:

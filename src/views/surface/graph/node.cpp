@@ -116,7 +116,6 @@ void SurfaceGraphNode::render(QPainter* painter, usize state) {
     painter->translate(this->position());
 
     this->draw_shadow(painter, r, state & SurfaceGraphNode::SELECTED);
-
     painter->fillRect(r, qApp->palette().color(QPalette::Base));
 
     int s = this->start_row();

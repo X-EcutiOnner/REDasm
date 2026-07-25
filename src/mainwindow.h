@@ -44,7 +44,6 @@ private:
     void show_context_view(RDContext* ctx);
     void enable_context_actions(bool e);
     void replace_view(QWidget* w);
-    void update_menubar();
     void clear_recents();
     void load_window_state();
     void load_recents();

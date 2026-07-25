@@ -17,6 +17,7 @@ public:
     virtual bool go_forward() = 0;
     virtual bool set_position(int row, int col) = 0;
     virtual bool select(int row, int col) = 0;
+    virtual bool select_all() = 0;
     [[nodiscard]] virtual RDRenderMode get_mode() const = 0;
     [[nodiscard]] virtual bool has_selection() const = 0;
     [[nodiscard]] virtual bool can_go_back() const = 0;

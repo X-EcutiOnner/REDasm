@@ -111,6 +111,9 @@ struct MainWindow {
         this->mnuhelp->addAction(actions::get(actions::OPEN_HOME));
         this->mnuhelp->addAction(actions::get(actions::OPEN_GITHUB));
 
+        this->mnuedit->addAction(actions::get(actions::COPY));
+        this->mnuedit->addAction(actions::get(actions::SELECT_ALL));
+
         this->actviewmemorymap = this->mnuview->addAction(
             "Memory Map", QKeySequence{Qt::SHIFT | Qt::Key_F1});
 

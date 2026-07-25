@@ -109,6 +109,12 @@ void copy() {
     qApp->clipboard()->setText(cv->surface()->get_selected_text());
 }
 
+void select_all() {
+    ContextView* cv = g_mainwindow->context_view();
+    if(!cv) return;
+    cv->surface()->select_all();
+}
+
 void show_details() {
     ContextView* cv = g_mainwindow->context_view();
     if(!cv) return;
@@ -405,6 +411,10 @@ void init(QMainWindow* mw) {
     g_actions[Type::COPY] =
         mw->addAction("Copy", QKeySequence{Qt::CTRL | Qt::Key_C}, mw,
                       []() { actions::copy(); });
+
+    g_actions[Type::SELECT_ALL] =
+        mw->addAction("Select All", QKeySequence{Qt::CTRL | Qt::Key_A}, mw,
+                      []() { actions::select_all(); });
 
     g_actions[Type::REFS_TO] =
         mw->addAction("Cross References To…", QKeySequence{Qt::Key_X}, mw,

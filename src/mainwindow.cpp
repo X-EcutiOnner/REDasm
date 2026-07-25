@@ -46,7 +46,6 @@ MainWindow::MainWindow(const RDInitParams& params, QWidget* parent)
     this->setWindowIcon(utils::get_logo());
     this->load_window_state();
     this->load_recents();
-    this->update_menubar();
 
     m_ui.statusbar->addPermanentWidget(statusbar::create_status_label(this),
                                        60);
@@ -58,6 +57,12 @@ MainWindow::MainWindow(const RDInitParams& params, QWidget* parent)
         statusbar::create_status_button(m_ui.statusbar->height(), this));
 
     this->show_welcome_view();
+
+    connect(m_ui.mnuedit, &QMenu::aboutToShow, this, [&]() {
+        ContextView* cv = this->context_view();
+        QAction* actcopy = actions::get(actions::COPY);
+        actcopy->setEnabled(cv && cv->surface()->has_selection());
+    });
 
     connect(m_ui.actfileexit, &QAction::triggered, this, &MainWindow::close);
     connect(m_ui.actfileopen, &QAction::triggered, this,
@@ -261,16 +266,6 @@ void MainWindow::show_context_view(RDContext* ctx) {
     cv->schedule_step();
 
     this->enable_context_actions(true);
-}
-
-void MainWindow::update_menubar() {
-    QAction* actcopy = actions::get(actions::COPY);
-    m_ui.mnuedit->addAction(actcopy);
-
-    connect(m_ui.mnuedit, &QMenu::aboutToShow, this, [&, actcopy]() {
-        ContextView* cv = this->context_view();
-        actcopy->setVisible(cv && cv->surface()->has_selection());
-    });
 }
 
 void MainWindow::clear_recents() {

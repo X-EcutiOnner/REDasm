@@ -90,6 +90,16 @@ bool SurfaceGraph::select(int row, int col) {
     return false;
 }
 
+bool SurfaceGraph::select_all() {
+    SurfaceGraphNode* n = this->find_node_at_cursor();
+    if(!n) return false;
+
+    rd_surfacegraph_set_pos(m_surface, n->start_row(), 0);
+    rd_surfacegraph_select(m_surface, n->end_row(), INT_MAX);
+    this->invalidate();
+    return true;
+}
+
 bool SurfaceGraph::go_back() {
     const RDFunction* prev = rd_surfacegraph_get_function(m_surface);
 

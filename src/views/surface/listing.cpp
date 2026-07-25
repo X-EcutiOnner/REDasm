@@ -115,6 +115,17 @@ bool SurfaceListing::select(int row, int col) {
     return rd_surface_select(m_surface, row, col);
 }
 
+bool SurfaceListing::select_all() {
+    rd_surface_set_pos(m_surface, 0, 0);
+
+    if(!rd_surface_select(m_surface, this->visible_rows(),
+                          this->visible_columns()))
+        return false;
+
+    this->invalidate();
+    return true;
+}
+
 bool SurfaceListing::go_back() {
     if(rd_surface_go_back(m_surface)) {
         this->viewport()->update();
@@ -280,9 +291,7 @@ void SurfaceListing::keyPressEvent(QKeyEvent* e) {
                               this->visible_columns());
         }
         else if(e->matches(QKeySequence::SelectAll)) {
-            rd_surface_set_pos(m_surface, 0, 0);
-            rd_surface_select(m_surface, this->visible_rows(),
-                              this->visible_columns());
+            if(this->select_all()) return;
         }
         else if(e->key() == Qt::Key_Space) {
             Q_EMIT switch_view();
