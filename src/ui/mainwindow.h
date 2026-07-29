@@ -113,6 +113,8 @@ struct MainWindow {
 
         this->mnuedit->addAction(actions::get(actions::COPY));
         this->mnuedit->addAction(actions::get(actions::SELECT_ALL));
+        this->mnuedit->addSeparator();
+        this->mnuedit->addAction(actions::get(actions::REANALYZE));
 
         this->actviewmemorymap = this->mnuview->addAction(
             "Memory Map", QKeySequence{Qt::SHIFT | Qt::Key_F1});

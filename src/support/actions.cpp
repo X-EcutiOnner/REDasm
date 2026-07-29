@@ -115,6 +115,11 @@ void select_all() {
     cv->surface()->select_all();
 }
 
+void reanalyze() {
+    ContextView* cv = g_mainwindow->context_view();
+    if(cv && rd_reanalyze(cv->context())) cv->schedule_step();
+}
+
 void show_details() {
     ContextView* cv = g_mainwindow->context_view();
     if(!cv) return;
@@ -372,7 +377,10 @@ void patch_instruction() {
                              qUtf8Printable(dlgpatch->instruction_text()),
                              dlgpatch->fill_nop());
 
-                         if(ok) cv->surface()->invalidate();
+                         if(ok) {
+                             cv->surface()->invalidate();
+                             cv->schedule_step();
+                         }
                      });
 
     dlgpatch->show();
@@ -438,6 +446,9 @@ void init(QMainWindow* mw) {
     g_actions[Type::PATCH_INSTRUCTION] = mw->addAction(
         "Patch Instruction", QKeySequence{Qt::SHIFT | Qt::Key_Space}, mw,
         []() { actions::patch_instruction(); });
+
+    g_actions[Type::REANALYZE] =
+        mw->addAction("Reanalyze", mw, []() { actions::reanalyze(); });
 
     g_actions[Type::OPEN_DETAILS] = mw->addAction(
         FA_ICON(0x3f), "Details", mw, []() { actions::show_details(); });

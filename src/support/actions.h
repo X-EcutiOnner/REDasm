@@ -17,6 +17,7 @@ enum Type : quint8 {
     OP_AS_ADDRESS,
     OP_AS_IMMEDIATE,
     PATCH_INSTRUCTION,
+    REANALYZE,
 
     OPEN_DETAILS,
 
