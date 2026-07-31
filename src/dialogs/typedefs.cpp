@@ -70,6 +70,8 @@ void _generate_function_tdef_code(QTextEdit* te, const RDTypeDef* tdef,
             QString{"%1 "}.arg(QString::fromUtf8(rd_type_to_str(&ret, ctx))));
     }
 
+    if(rd_typedef_is_noret(tdef)) cur.insertText("noreturn ");
+
     cur.insertText(QString::fromUtf8(rd_typedef_name(tdef)));
 
     RDParamSlice args;
@@ -91,8 +93,6 @@ void _generate_function_tdef_code(QTextEdit* te, const RDTypeDef* tdef,
 
         cur.insertText("\n)");
     }
-
-    if(rd_typedef_is_noret(tdef)) cur.insertText(" noreturn");
 }
 
 } // namespace
