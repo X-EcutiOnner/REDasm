@@ -87,7 +87,7 @@ void ContextView::check_status() {
     if(!m_status.is_busy) {
         statusbar::set_ready_status();
         statusbar::check_problems(m_context);
-        m_ui.splitview->surface()->jump_to_ep();
+        // m_ui.splitview->surface()->jump_to_ep();
     }
 
     if(m_status.segment && m_status.address.has_value) {

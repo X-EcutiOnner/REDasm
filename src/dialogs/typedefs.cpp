@@ -64,28 +64,33 @@ void _generate_function_tdef_code(QTextEdit* te, const RDTypeDef* tdef,
     QTextDocument* doc = te->document();
     QTextCursor cur(doc);
 
-    RDType ret = rd_typedef_get_ret(tdef);
-    RDParamSlice args = rd_typedef_get_args(tdef);
-
-    cur.insertText(QString::fromUtf8(rd_type_to_str(&ret, ctx)));
-    cur.insertText(
-        QString{" %1"}.arg(QString::fromUtf8(rd_typedef_name(tdef))));
-
-    cur.insertText("(\n");
-
-    bool first = true;
-
-    const RDParam* arg;
-    rd_slice_each(arg, args) {
-        if(!first) cur.insertText(",\n");
-        first = false;
-
-        QString arg_type = QString::fromUtf8(rd_type_to_str(&arg->type, ctx));
-        QString arg_name = QString::fromUtf8(arg->name);
-        cur.insertText(QString{"    %1 %2"}.arg(arg_type).arg(arg_name));
+    RDType ret;
+    if(rd_typedef_get_ret(tdef, &ret)) {
+        cur.insertText(
+            QString{"%1 "}.arg(QString::fromUtf8(rd_type_to_str(&ret, ctx))));
     }
 
-    cur.insertText("\n)");
+    cur.insertText(QString::fromUtf8(rd_typedef_name(tdef)));
+
+    RDParamSlice args;
+    if(rd_typedef_get_args(tdef, &args)) {
+        cur.insertText("(\n");
+
+        bool first = true;
+
+        const RDParam* arg;
+        rd_slice_each(arg, args) {
+            if(!first) cur.insertText(",\n");
+            first = false;
+
+            QString arg_type =
+                QString::fromUtf8(rd_type_to_str(&arg->type, ctx));
+            QString arg_name = QString::fromUtf8(arg->name);
+            cur.insertText(QString{"    %1 %2"}.arg(arg_type).arg(arg_name));
+        }
+
+        cur.insertText("\n)");
+    }
 
     if(rd_typedef_is_noret(tdef)) cur.insertText(" noreturn");
 }
