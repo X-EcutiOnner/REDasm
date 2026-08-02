@@ -43,6 +43,7 @@ target_sources(${PROJECT_NAME}
         src/dialogs/devgraphs.cpp
         src/dialogs/flc.cpp
         src/dialogs/goto.cpp
+        src/dialogs/input.cpp
         src/dialogs/loader.cpp
         src/dialogs/memorymap.cpp
         src/dialogs/patch.cpp

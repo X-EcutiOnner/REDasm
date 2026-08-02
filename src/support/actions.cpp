@@ -2,6 +2,7 @@
 #include "dialogs/about.h"
 #include "dialogs/detail.h"
 #include "dialogs/goto.h"
+#include "dialogs/input.h"
 #include "dialogs/patch.h"
 #include "dialogs/settings.h"
 #include "dialogs/table.h"
@@ -286,9 +287,10 @@ void comment() {
     bool ok = false;
     const char* cmt = rd_get_comment(cv->context(), *address);
 
-    QString s = QInputDialog::getMultiLineText(
+    QString s = input_dialog::get_multi_line_text(
         g_mainwindow, QString{"Comment @ %1"}.arg(utils::to_hex(*address)),
-        "Insert comment (or leave empty):", cmt ? cmt : QString{}, &ok);
+        "Insert comment (or leave empty), CTRL+ENTER to accept:",
+        cmt ? cmt : QString{}, &ok);
 
     if(ok && rd_set_comment(cv->context(), *address, qUtf8Printable(s)))
         cv->surface()->invalidate();
