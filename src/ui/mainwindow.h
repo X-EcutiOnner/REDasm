@@ -106,10 +106,11 @@ struct MainWindow {
         this->actdevdecoder = this->mnudev->addAction("&Decoder/Encoder");
         this->actdevgraphs = this->mnudev->addAction("&Graphs");
 
-        this->mnuhelp->addAction(actions::get(actions::OPEN_ABOUT));
-        this->mnuhelp->addSeparator();
         this->mnuhelp->addAction(actions::get(actions::OPEN_HOME));
         this->mnuhelp->addAction(actions::get(actions::OPEN_GITHUB));
+        this->mnuhelp->addAction(actions::get(actions::OPEN_FEEDBACK));
+        this->mnuhelp->addSeparator();
+        this->mnuhelp->addAction(actions::get(actions::OPEN_ABOUT));
 
         this->mnuedit->addAction(actions::get(actions::COPY));
         this->mnuedit->addAction(actions::get(actions::SELECT_ALL));

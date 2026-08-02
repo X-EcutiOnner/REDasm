@@ -19,7 +19,6 @@ struct WelcomeView {
     QPushButton* pbopen;
     QPushButton* pbsettings;
     QPushButton* pbabout;
-    QToolButton* tbtnopenhome;
     QToolButton* tbtnopengithub;
     QToolButton* tbtnopendiscord;
     QToolButton* tbtnopenx;
@@ -93,20 +92,17 @@ struct WelcomeView {
         auto* grid = new QGridLayout();
         grid->setSpacing(8);
 
-        this->tbtnopenhome = new QToolButton(self);
-        grid->addWidget(this->tbtnopenhome, 0, 0, 1, 1);
-
         this->tbtnopengithub = new QToolButton(self);
-        grid->addWidget(this->tbtnopengithub, 0, 1, 1, 1);
+        grid->addWidget(this->tbtnopengithub, 0, 0, 1, 1);
 
         this->tbtnopendiscord = new QToolButton(self);
-        grid->addWidget(this->tbtnopendiscord, 0, 2, 1, 1);
+        grid->addWidget(this->tbtnopendiscord, 0, 1, 1, 1);
 
         this->tbtnopenx = new QToolButton(self);
-        grid->addWidget(this->tbtnopenx, 0, 3, 1, 1);
+        grid->addWidget(this->tbtnopenx, 0, 2, 1, 1);
 
         this->tbtnopenmastodon = new QToolButton(self);
-        grid->addWidget(this->tbtnopenmastodon, 0, 4, 1, 1);
+        grid->addWidget(this->tbtnopenmastodon, 0, 3, 1, 1);
 
         hbox1->addLayout(grid);
         hbox1->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding,

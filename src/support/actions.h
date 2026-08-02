@@ -22,10 +22,11 @@ enum Type : quint8 {
     OPEN_DETAILS,
 
     OPEN_HOME,
+    OPEN_GITHUB,
     OPEN_DISCORD,
     OPEN_X,
     OPEN_MASTODON,
-    OPEN_GITHUB,
+    OPEN_FEEDBACK,
 
     OPEN_SETTINGS,
     OPEN_ABOUT,

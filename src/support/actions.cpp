@@ -454,8 +454,13 @@ void init(QMainWindow* mw) {
         FA_ICON(0x3f), "Details", mw, []() { actions::show_details(); });
 
     g_actions[Type::OPEN_HOME] =
-        mw->addAction(FA_ICON(0xf0ac), "Homepage", mw, []() {
+        mw->addAction(FA_ICON(0xf015), "Home", mw, []() {
             QDesktopServices::openUrl(QUrl{"https://redasm.dev"});
+        });
+
+    g_actions[Type::OPEN_GITHUB] =
+        mw->addAction(FAB_ICON(0xf113), "Source Code", mw, []() {
+            QDesktopServices::openUrl(QUrl{"https://source.redasm.dev"});
         });
 
     g_actions[Type::OPEN_DISCORD] =
@@ -472,10 +477,9 @@ void init(QMainWindow* mw) {
             QDesktopServices::openUrl(QUrl{"https://infosec.exchange/@redasm"});
         });
 
-    g_actions[Type::OPEN_GITHUB] =
-        mw->addAction(FAB_ICON(0xf113), "Report an Issue", mw, []() {
-            QDesktopServices::openUrl(
-                QUrl{"https://github.com/redasm-dev/redasm/issues"});
+    g_actions[Type::OPEN_FEEDBACK] =
+        mw->addAction(FA_ICON(0xf188), "Send feedback", mw, []() {
+            QDesktopServices::openUrl(QUrl{"https://bugs.redasm.dev"});
         });
 
     g_actions[Type::OPEN_ABOUT] =

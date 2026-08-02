@@ -52,7 +52,6 @@ WelcomeView::WelcomeView(QWidget* parent): DashboardView{parent}, m_ui{this} {
     this->make_bordered(m_ui.pbsettings);
     this->make_bordered(m_ui.pbabout);
 
-    style_social_button(m_ui.tbtnopenhome, actions::OPEN_HOME);
     style_social_button(m_ui.tbtnopengithub, actions::OPEN_GITHUB);
     style_social_button(m_ui.tbtnopendiscord, actions::OPEN_DISCORD);
     style_social_button(m_ui.tbtnopenx, actions::OPEN_X);
