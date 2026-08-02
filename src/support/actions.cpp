@@ -364,11 +364,15 @@ void patch_instruction() {
     ContextView* cv = g_mainwindow->context_view();
     if(!cv) return;
 
-    auto celldata = cv->surface()->get_cell_data_under_cursor();
-    if(!celldata || !celldata->is_instruction) return;
-
     auto address = cv->surface()->get_current_address();
     if(!address) return;
+
+    const RDSegment* seg = rd_find_segment(cv->context(), *address);
+    if(!seg || !(seg->perm & RD_SP_X)) return;
+
+    RDFlags f;
+    if(!rd_get_flags(cv->context(), *address, &f) || !rd_flags_has_code(f))
+        return;
 
     auto* dlgpatch = new PatchDialog(*address, g_mainwindow);
 

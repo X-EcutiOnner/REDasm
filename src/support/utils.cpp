@@ -100,14 +100,14 @@ QMenu* create_surface_menu(ISurface* surface) {
     menu->addAction(actions::get(actions::OPEN_DETAILS));
 
     QObject::connect(menu, &QMenu::aboutToShow, surface->to_widget(), [=]() {
-        auto cursoraddr = surface->get_address_under_cursor();
+        auto cursor_addr = surface->get_address_under_cursor();
 
         actcopy->setVisible(surface->has_selection());
-        actrename->setVisible(cursoraddr.has_value());
+        actrename->setVisible(cursor_addr.has_value());
 
-        actrefs->setVisible(cursoraddr.has_value() &&
+        actrefs->setVisible(cursor_addr.has_value() &&
                             !rd_slice_is_empty(rd_get_xrefs_to(
-                                surface->context(), *cursoraddr, RD_XR_NONE)));
+                                surface->context(), *cursor_addr, RD_XR_NONE)));
 
         auto celldata = surface->get_cell_data_under_cursor();
 
@@ -119,7 +119,20 @@ QMenu* create_surface_menu(ISurface* surface) {
         act_op_as_imm->setVisible(celldata && celldata->operand.index != -1 &&
                                   celldata->operand.value.kind == RD_OP_ADDR);
 
-        act_patch->setVisible(celldata && celldata->is_instruction);
+        RDFlags f;
+        auto curr_address = surface->get_current_address();
+        bool flags_found =
+            curr_address && rd_get_flags(surface->context(), *curr_address, &f);
+
+        if(flags_found) {
+            const RDSegment* seg =
+                rd_find_segment(surface->context(), *curr_address);
+
+            act_patch->setVisible(seg && (seg->perm & RD_SP_X) &&
+                                  rd_flags_has_code(f));
+        }
+        else
+            act_patch->setVisible(false);
     });
 
     return menu;
