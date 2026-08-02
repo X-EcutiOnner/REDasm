@@ -20,7 +20,7 @@ inline MainWindow* mainwindow{nullptr};
 inline QStringList search_paths;
 inline QList<QByteArray> kb_search_paths; // C compatibility
 
-QString to_hex(RDAddress address, const RDSegment* seg = nullptr);
+QString to_hex(RDAddress address, const RDContext* ctx = nullptr);
 QString confidence_text(RDConfidence c);
 QMenu* create_surface_menu(ISurface* surface);
 FeedbackToolButton* create_screenshot_button(QWidget* w);

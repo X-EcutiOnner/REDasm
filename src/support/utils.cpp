@@ -53,9 +53,14 @@ QPixmap copy_screenshot(QWidget* w) {
 
 } // namespace
 
-QString to_hex(RDAddress address, const RDSegment* seg) {
+QString to_hex(RDAddress address, const RDContext* ctx) {
     QString s = QString::number(address, 16).toUpper();
-    if(seg) return s.rightJustified(static_cast<qsizetype>(seg->unit) * 2, '0');
+
+    if(ctx) {
+        return s.rightJustified(
+            static_cast<qsizetype>(rd_get_ptr_size(ctx)) * 2, '0');
+    }
+
     return s;
 }
 

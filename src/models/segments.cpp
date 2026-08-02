@@ -14,7 +14,7 @@ QString get_segment_type(const RDSegment* seg) {
 } // namespace
 
 SegmentsModel::SegmentsModel(const RDContext* ctx, QObject* parent)
-    : QAbstractListModel{parent} {
+    : QAbstractListModel{parent}, m_context{ctx} {
     m_segments = rd_get_all_segments(ctx);
 }
 
@@ -29,11 +29,10 @@ QVariant SegmentsModel::data(const QModelIndex& index, int role) const {
 
         switch(index.column()) {
             case 0: return s->name;
-            case 1: return utils::to_hex(s->start_address, s);
-            case 2: return utils::to_hex(s->end_address, s);
-            case 3: return utils::to_hex(len, s);
-            case 4: return QString::number(s->unit);
-            case 5: return get_segment_type(s);
+            case 1: return utils::to_hex(s->start_address, m_context);
+            case 2: return utils::to_hex(s->end_address, m_context);
+            case 3: return utils::to_hex(len, m_context);
+            case 4: return get_segment_type(s);
             default: break;
         }
     }
@@ -54,15 +53,14 @@ QVariant SegmentsModel::headerData(int section, Qt::Orientation orientation,
         case 1: return "Start Address";
         case 2: return "End Address";
         case 3: return "Size";
-        case 4: return "Unit";
-        case 5: return "Perm";
+        case 4: return "Perm";
         default: break;
     }
 
     return {};
 }
 
-int SegmentsModel::columnCount(const QModelIndex&) const { return 6; }
+int SegmentsModel::columnCount(const QModelIndex&) const { return 5; }
 
 int SegmentsModel::rowCount(const QModelIndex&) const {
     return static_cast<int>(rd_slice_length(m_segments));

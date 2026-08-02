@@ -14,10 +14,9 @@ RDAddress ExternalsModel::address(const QModelIndex& index) const {
 QVariant ExternalsModel::data(const QModelIndex& index, int role) const {
     if(role == Qt::DisplayRole) {
         RDExternal ext = rd_slice_at(m_externals, index.row());
-        const RDSegment* seg = rd_find_segment(m_context, ext.address);
 
         switch(index.column()) {
-            case 0: return utils::to_hex(ext.address, seg);
+            case 0: return utils::to_hex(ext.address, m_context);
 
             case 1:
                 return ext.ordinal.has_value

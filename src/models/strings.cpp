@@ -13,10 +13,13 @@ QVariant StringsModel::data(const QModelIndex& index, int role) const {
         QModelIndex srcindex = this->mapToSource(index);
         RDContext* ctx = this->symbols_model()->context();
         RDSymbol sym = this->symbols_model()->symbol(srcindex);
-        const RDSegment* s = rd_find_segment(ctx, sym.address);
 
         switch(index.column()) {
-            case 0: return utils::to_hex(sym.address, s);
+            case 0: {
+                return utils::to_hex(sym.address,
+                                     this->symbols_model()->context());
+            }
+
             case 1: return QString::number(sym.type.count);
             case 2: return QString::fromUtf8(rd_typedef_name(sym.type.def));
 

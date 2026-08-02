@@ -17,12 +17,10 @@ RDAddress ProblemsModel::address(const QModelIndex& index) const {
 QVariant ProblemsModel::data(const QModelIndex& index, int role) const {
     if(role == Qt::DisplayRole) {
         const RDProblem* p = &rd_slice_at(m_problems, index.row());
-        const RDSegment* fromseg = rd_find_segment(m_context, p->from_address);
-        const RDSegment* toseg = rd_find_segment(m_context, p->address);
 
         switch(index.column()) {
-            case 0: return utils::to_hex(p->from_address, fromseg);
-            case 1: return utils::to_hex(p->address, toseg);
+            case 0: return utils::to_hex(p->from_address, m_context);
+            case 1: return utils::to_hex(p->address, m_context);
             case 2: return QString::fromUtf8(p->message);
             default: break;
         }

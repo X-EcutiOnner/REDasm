@@ -20,4 +20,5 @@ public:
 
 private:
     RDSegmentSlice m_segments;
+    const RDContext* m_context;
 };
