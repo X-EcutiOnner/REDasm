@@ -19,6 +19,7 @@ public:
     [[nodiscard]] QWidget* to_widget() override { return this; }
     [[nodiscard]] RDContext* context() override { return m_context; }
     [[nodiscard]] RDSurfacePos get_position() const override;
+    [[nodiscard]] std::optional<ISurfaceRange> get_selected_range() const override;
     [[nodiscard]] std::optional<RDAddress> get_current_address() const override;
     [[nodiscard]] std::optional<RDAddress> get_address_under_cursor() const override;
     [[nodiscard]] std::optional<RDCellData> get_cell_data_under_cursor() const override;

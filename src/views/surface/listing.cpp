@@ -373,6 +373,14 @@ RDSurfacePos SurfaceListing::get_position() const {
     return rd_surface_get_pos(m_surface);
 }
 
+std::optional<ISurfaceRange> SurfaceListing::get_selected_range() const {
+    RDAddress start, end;
+    if(!rd_surface_get_selected_range(m_surface, &start, &end))
+        return std::nullopt;
+
+    return ISurfaceRange{start, end};
+}
+
 std::optional<RDAddress> SurfaceListing::get_current_address() const {
     RDAddress address;
     if(rd_surface_get_current_address(m_surface, &address)) return address;

@@ -249,6 +249,14 @@ QString SurfaceGraph::get_selected_text() const {
     return QString::fromUtf8(rd_surfacegraph_get_selected_text(m_surface));
 }
 
+std::optional<ISurfaceRange> SurfaceGraph::get_selected_range() const {
+    RDAddress start, end;
+    if(!rd_surfacegraph_get_selected_range(m_surface, &start, &end))
+        return std::nullopt;
+
+    return ISurfaceRange{start, end};
+}
+
 std::optional<RDAddress> SurfaceGraph::get_current_address() const {
     RDAddress address;
     if(rd_surfacegraph_get_current_address(m_surface, &address)) return address;

@@ -4,6 +4,8 @@
 #include <optional>
 #include <redasm/redasm.h>
 
+using ISurfaceRange = std::pair<RDAddress, RDAddress>;
+
 class ISurface {
 public:
     // clang-format off
@@ -22,6 +24,7 @@ public:
     [[nodiscard]] virtual bool has_selection() const = 0;
     [[nodiscard]] virtual bool can_go_back() const = 0;
     [[nodiscard]] virtual bool can_go_forward() const = 0;
+    [[nodiscard]] virtual std::optional<ISurfaceRange> get_selected_range() const = 0;
     [[nodiscard]] virtual std::optional<RDAddress> get_current_address() const = 0;
     [[nodiscard]] virtual std::optional<RDAddress> get_address_under_cursor() const = 0;
     [[nodiscard]] virtual std::optional<RDCellData> get_cell_data_under_cursor() const = 0;
