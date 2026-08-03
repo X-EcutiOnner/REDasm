@@ -118,7 +118,8 @@ void TypeDefSyntaxHighlighter::add_type(const QString& type) {
 
 TypeDefsDialog::TypeDefsDialog(RDContext* ctx, QWidget* parent)
     : QDialog{parent}, m_ui{this}, m_context{ctx} {
-    m_typedefsmodel = new TypedefsFilterModel(ctx, this);
+    m_typedefsmodel = new TypedefsFilterModel(ctx, true, this);
+    m_typedefsmodel->sort(0, Qt::AscendingOrder);
 
     auto* hl = new TypeDefSyntaxHighlighter(m_ui.tecode->document());
     RDTypeDefSlice tdefs = rd_get_all_type_defs(ctx);

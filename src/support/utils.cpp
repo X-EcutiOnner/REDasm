@@ -83,6 +83,9 @@ QMenu* create_surface_menu(ISurface* surface) {
     QAction* actcomment = actions::get(actions::COMMENT);
     QAction* act_op_as_addr = actions::get(actions::OP_AS_ADDRESS);
     QAction* act_op_as_imm = actions::get(actions::OP_AS_IMMEDIATE);
+    QAction* act_undefine = actions::get(actions::DO_UNDEFINE);
+    QAction* act_code = actions::get(actions::DO_CODE);
+    QAction* act_data = actions::get(actions::DO_DATA);
     QAction* act_patch = actions::get(actions::PATCH_INSTRUCTION);
 
     auto* menu = new QMenu(surface->to_widget());
@@ -93,6 +96,9 @@ QMenu* create_surface_menu(ISurface* surface) {
     menu->addAction(actcomment);
     menu->addAction(act_op_as_addr);
     menu->addAction(act_op_as_imm);
+    menu->addAction(act_undefine);
+    menu->addAction(act_code);
+    menu->addAction(act_data);
     menu->addAction(act_patch);
     menu->addSeparator();
     menu->addAction(actions::get(actions::GOTO));
@@ -128,11 +134,21 @@ QMenu* create_surface_menu(ISurface* surface) {
             const RDSegment* seg =
                 rd_find_segment(surface->context(), *curr_address);
 
+            act_undefine->setVisible(seg && !rd_flags_has_unknown(f));
+            act_data->setVisible(seg && !rd_flags_has_data(f));
+
+            act_code->setVisible(seg && (seg->perm & RD_SP_X) &&
+                                 !rd_flags_has_code(f));
+
             act_patch->setVisible(seg && (seg->perm & RD_SP_X) &&
                                   rd_flags_has_code(f));
         }
-        else
+        else {
+            act_undefine->setVisible(false);
+            act_code->setVisible(false);
+            act_data->setVisible(false);
             act_patch->setVisible(false);
+        }
     });
 
     return menu;

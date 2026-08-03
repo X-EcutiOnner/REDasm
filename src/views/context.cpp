@@ -107,3 +107,8 @@ void ContextView::check_status() {
                                        .arg(m_status.pending_jumps));
     }
 }
+
+void ContextView::invalidate() {
+    m_functionsmodel->resync();
+    this->surface()->invalidate();
+}

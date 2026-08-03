@@ -6,6 +6,7 @@
 #include "dialogs/patch.h"
 #include "dialogs/settings.h"
 #include "dialogs/table.h"
+#include "dialogs/types.h"
 #include "mainwindow.h"
 #include "models/references.h"
 #include "support/fontawesome.h"
@@ -15,6 +16,7 @@
 #include <QDesktopServices>
 #include <QHash>
 #include <QInputDialog>
+#include <QMessageBox>
 #include <cinttypes>
 
 namespace actions {
@@ -293,7 +295,7 @@ void comment() {
         cmt ? cmt : QString{}, &ok);
 
     if(ok && rd_set_comment(cv->context(), *address, qUtf8Printable(s)))
-        cv->surface()->invalidate();
+        cv->invalidate();
 }
 
 void refs_to() {
@@ -340,7 +342,7 @@ void op_as_address() {
     if(op.kind != RD_OP_IMM || !rd_is_address(cv->context(), op.imm)) return;
 
     if(rd_operand_as_address(cv->context(), *address, celldata->operand.index))
-        cv->surface()->invalidate();
+        cv->invalidate();
 }
 
 void op_as_immediate() {
@@ -357,7 +359,89 @@ void op_as_immediate() {
 
     if(rd_operand_as_immediate(cv->context(), *address,
                                celldata->operand.index))
-        cv->surface()->invalidate();
+        cv->invalidate();
+}
+
+void do_undefine() {
+    ContextView* cv = g_mainwindow->context_view();
+    if(!cv) return;
+
+    auto range = cv->surface()->get_selected_range();
+
+    if(range) {
+        auto res =
+            QMessageBox::question(g_mainwindow, "Please confirm",
+                                  QString{"Do you want to undefine range %1-%2"}
+                                      .arg(utils::to_hex(range->first))
+                                      .arg(utils::to_hex(range->second)));
+
+        if(res == QMessageBox::Yes &&
+           rd_user_undefine_n(cv->context(), range->first,
+                              range->second - range->first + 1))
+            cv->invalidate();
+    }
+    else {
+        auto address = cv->surface()->get_current_address();
+        if(!address) return;
+
+        auto res =
+            QMessageBox::question(g_mainwindow, "Please confirm",
+                                  QString{"Do you want to undefine %1?"}.arg(
+                                      utils::to_hex(*address)));
+
+        if(res == QMessageBox::Yes && rd_user_undefine(cv->context(), *address))
+            cv->invalidate();
+    }
+}
+
+void do_code() {
+    ContextView* cv = g_mainwindow->context_view();
+    if(!cv) return;
+
+    auto address = cv->surface()->get_current_address();
+    if(!address) return;
+
+    const RDSegment* seg = rd_find_segment(cv->context(), *address);
+    if(!seg || !(seg->perm & RD_SP_X)) return;
+
+    auto res =
+        QMessageBox::question(g_mainwindow, "Please confirm",
+                              QString{"Do you want to convert to code %1?"}.arg(
+                                  utils::to_hex(*address)));
+
+    if(res != QMessageBox::Yes) return;
+
+    if(rd_make_code(cv->context(), *address) && rd_reanalyze(cv->context())) {
+        cv->schedule_step();
+        cv->invalidate();
+    }
+}
+
+void do_data() {
+    ContextView* cv = g_mainwindow->context_view();
+    if(!cv) return;
+
+    auto address = cv->surface()->get_current_address();
+    if(!address) return;
+
+    auto* dlgtypes = new TypesDialog(cv->context(), g_mainwindow);
+
+    QObject::connect(
+        dlgtypes, &TypesDialog::accepted, g_mainwindow,
+        [cv, dlgtypes, addr = *address]() {
+            bool ok = rd_user_type(cv->context(), addr,
+                                   qUtf8Printable(dlgtypes->selected_type()),
+                                   dlgtypes->selected_count(),
+                                   dlgtypes->selected_modifier()) &&
+                      rd_reanalyze(cv->context());
+
+            if(ok) {
+                cv->invalidate();
+                cv->schedule_step();
+            }
+        });
+
+    dlgtypes->show();
 }
 
 void patch_instruction() {
@@ -377,14 +461,14 @@ void patch_instruction() {
     auto* dlgpatch = new PatchDialog(*address, g_mainwindow);
 
     QObject::connect(dlgpatch, &PatchDialog::accepted, g_mainwindow,
-                     [&, cv, dlgpatch, addr = *address]() {
+                     [cv, dlgpatch, addr = *address]() {
                          bool ok = rd_patch_instruction(
                              cv->context(), addr,
                              qUtf8Printable(dlgpatch->instruction_text()),
                              dlgpatch->fill_nop());
 
                          if(ok) {
-                             cv->surface()->invalidate();
+                             cv->invalidate();
                              cv->schedule_step();
                          }
                      });
@@ -410,7 +494,7 @@ void rename() {
         "New Name", QLineEdit::Normal, name, &ok);
 
     if(ok && rd_user_name(cv->context(), *address, qUtf8Printable(s)))
-        cv->surface()->invalidate();
+        cv->invalidate();
 }
 
 } // namespace
@@ -448,6 +532,16 @@ void init(QMainWindow* mw) {
     g_actions[Type::OP_AS_IMMEDIATE] =
         mw->addAction("As Immediate", QKeySequence{Qt::Key_I}, mw,
                       []() { actions::op_as_immediate(); });
+
+    g_actions[Type::DO_UNDEFINE] =
+        mw->addAction(FA_ICON(0xf00d), "Undefine", Qt::Key_U, mw,
+                      []() { actions::do_undefine(); });
+
+    g_actions[Type::DO_CODE] = mw->addAction(FA_ICON(0xf121), "Code", Qt::Key_C,
+                                             mw, []() { actions::do_code(); });
+
+    g_actions[Type::DO_DATA] = mw->addAction(FA_ICON(0xf1b3), "Data", Qt::Key_D,
+                                             mw, []() { actions::do_data(); });
 
     g_actions[Type::PATCH_INSTRUCTION] = mw->addAction(
         "Patch Instruction", QKeySequence{Qt::SHIFT | Qt::Key_Space}, mw,

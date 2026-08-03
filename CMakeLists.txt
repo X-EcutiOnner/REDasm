@@ -51,6 +51,7 @@ target_sources(${PROJECT_NAME}
         src/dialogs/settings.cpp
         src/dialogs/table.cpp
         src/dialogs/typedefs.cpp
+        src/dialogs/types.cpp
         src/hexview/flagsbuffer.cpp
         src/hexview/flagsdelegate.cpp
         src/models/externals.cpp

@@ -15,6 +15,7 @@ public:
     ~ContextView() override;
     void show_segment_regs();
     void schedule_step();
+    void invalidate();
 
     [[nodiscard]] RDContext* context() const { return m_context; }
 

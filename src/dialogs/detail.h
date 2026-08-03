@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ui/detaildialog.h"
-#include <QDialog>
 
 class DetailDialog: public QDialog {
     Q_OBJECT
