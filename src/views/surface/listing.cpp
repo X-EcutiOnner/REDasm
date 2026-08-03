@@ -290,9 +290,6 @@ void SurfaceListing::keyPressEvent(QKeyEvent* e) {
             rd_surface_select(m_surface, this->visible_rows() - row,
                               this->visible_columns());
         }
-        else if(e->matches(QKeySequence::SelectAll)) {
-            if(this->select_all()) return;
-        }
         else if(e->key() == Qt::Key_Space) {
             Q_EMIT switch_view();
             return;

@@ -497,53 +497,87 @@ void rename() {
         cv->invalidate();
 }
 
+template<typename Slot>
+QAction* add_detached_action(const QString& text, QObject* recv, Slot&& slot) {
+    auto* act = new QAction(text, g_mainwindow);
+    QObject::connect(act, &QAction::triggered, recv, slot);
+    return act;
+}
+
+template<typename Slot>
+QAction* add_detached_action(const QIcon& icon, const QString& text,
+                             QObject* recv, Slot&& slot) {
+    auto* act = new QAction(icon, text, g_mainwindow);
+    QObject::connect(act, &QAction::triggered, recv, slot);
+    return act;
+}
+
+template<typename Slot>
+QAction* add_detached_action(const QString& text, const QKeySequence& shortcut,
+                             QObject* recv, Slot&& slot) {
+    auto* act = new QAction(text, g_mainwindow);
+    act->setShortcut(shortcut);
+    QObject::connect(act, &QAction::triggered, recv, slot);
+    return act;
+}
+
+template<typename Slot>
+QAction* add_detached_action(const QIcon& icon, const QString& text,
+                             const QKeySequence& shortcut, QObject* recv,
+                             Slot&& slot) {
+    auto* act = new QAction(icon, text, g_mainwindow);
+    act->setShortcut(shortcut);
+    QObject::connect(act, &QAction::triggered, recv, slot);
+    return act;
+}
+
 } // namespace
 
 void init(QMainWindow* mw) {
     g_mainwindow = static_cast<MainWindow*>(mw);
 
-    g_actions[Type::GOTO] =
-        mw->addAction(FA_ICON(0xf1e5), "Goto", QKeySequence{Qt::Key_G}, mw,
-                      []() { actions::show_goto(); });
+    g_actions[Type::GOTO] = actions::add_detached_action(
+        FA_ICON(0xf1e5), "Goto", QKeySequence{Qt::Key_G}, mw,
+        []() { actions::show_goto(); });
 
     g_actions[Type::COPY] =
-        mw->addAction("Copy", QKeySequence{Qt::CTRL | Qt::Key_C}, mw,
-                      []() { actions::copy(); });
+        actions::add_detached_action("Copy", QKeySequence{Qt::CTRL | Qt::Key_C},
+                                     mw, []() { actions::copy(); });
 
-    g_actions[Type::SELECT_ALL] =
-        mw->addAction("Select All", QKeySequence{Qt::CTRL | Qt::Key_A}, mw,
-                      []() { actions::select_all(); });
+    g_actions[Type::SELECT_ALL] = actions::add_detached_action(
+        "Select All", QKeySequence{Qt::CTRL | Qt::Key_A}, mw,
+        []() { actions::select_all(); });
 
-    g_actions[Type::REFS_TO] =
-        mw->addAction("Cross References To…", QKeySequence{Qt::Key_X}, mw,
-                      []() { actions::refs_to(); });
+    g_actions[Type::REFS_TO] = actions::add_detached_action(
+        "Cross References To…", QKeySequence{Qt::Key_X}, mw,
+        []() { actions::refs_to(); });
 
-    g_actions[Type::RENAME] = mw->addAction("Rename", QKeySequence(Qt::Key_N),
-                                            mw, []() { actions::rename(); });
+    g_actions[Type::RENAME] = actions::add_detached_action(
+        "Rename", QKeySequence(Qt::Key_N), mw, []() { actions::rename(); });
 
     g_actions[Type::COMMENT] =
-        mw->addAction("Comment", QKeySequence{Qt::Key_Semicolon}, mw,
-                      []() { actions::comment(); });
+        actions::add_detached_action("Comment", QKeySequence{Qt::Key_Semicolon},
+                                     mw, []() { actions::comment(); });
 
     g_actions[Type::OP_AS_ADDRESS] =
-        mw->addAction("As Address", QKeySequence{Qt::Key_A}, mw,
-                      []() { actions::op_as_address(); });
+        actions::add_detached_action("As Address", QKeySequence{Qt::Key_A}, mw,
+                                     []() { actions::op_as_address(); });
 
     g_actions[Type::OP_AS_IMMEDIATE] =
-        mw->addAction("As Immediate", QKeySequence{Qt::Key_I}, mw,
-                      []() { actions::op_as_immediate(); });
+        actions::add_detached_action("As Immediate", QKeySequence{Qt::Key_I},
+                                     mw, []() { actions::op_as_immediate(); });
 
     g_actions[Type::DO_UNDEFINE] =
-        mw->addAction(FA_ICON(0xf00d), "Undefine", Qt::Key_U, mw,
-                      []() { actions::do_undefine(); });
+        actions::add_detached_action(FA_ICON(0xf00d), "Undefine", Qt::Key_U, mw,
+                                     []() { actions::do_undefine(); });
 
-    g_actions[Type::DO_CODE] = mw->addAction(FA_ICON(0xf121), "Code", Qt::Key_C,
-                                             mw, []() { actions::do_code(); });
+    g_actions[Type::DO_CODE] = actions::add_detached_action(
+        FA_ICON(0xf121), "Code", Qt::Key_C, mw, []() { actions::do_code(); });
 
-    g_actions[Type::DO_DATA] = mw->addAction(FA_ICON(0xf1b3), "Data", Qt::Key_D,
-                                             mw, []() { actions::do_data(); });
+    g_actions[Type::DO_DATA] = actions::add_detached_action(
+        FA_ICON(0xf1b3), "Data", Qt::Key_D, mw, []() { actions::do_data(); });
 
-    g_actions[Type::PATCH_INSTRUCTION] = mw->addAction(
+    g_actions[Type::PATCH_INSTRUCTION] = actions::add_detached_action(
         "Patch Instruction", QKeySequence{Qt::SHIFT | Qt::Key_Space}, mw,
         []() { actions::patch_instruction(); });
 

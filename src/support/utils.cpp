@@ -105,6 +105,12 @@ QMenu* create_surface_menu(ISurface* surface) {
     menu->addSeparator();
     menu->addAction(actions::get(actions::OPEN_DETAILS));
 
+    // attach actions to surface
+    for(QAction* act : menu->actions()) {
+        if(act->isSeparator()) continue;
+        surface->to_widget()->addAction(act);
+    }
+
     QObject::connect(menu, &QMenu::aboutToShow, surface->to_widget(), [=]() {
         auto cursor_addr = surface->get_address_under_cursor();
 
