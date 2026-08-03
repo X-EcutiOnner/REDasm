@@ -21,5 +21,5 @@ public:
 
 private:
     RDContext* m_context;
-    RDFunctionSlice m_functions;
+    RDAddressSlice m_functions;
 };

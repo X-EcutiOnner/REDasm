@@ -7,19 +7,17 @@ FunctionsModel::FunctionsModel(RDContext* ctx, QObject* parent)
 
 void FunctionsModel::resync() {
     this->beginResetModel();
-    m_functions = rd_get_all_functions(m_context);
+    m_functions = rd_get_all_functions_address(m_context);
     this->endResetModel();
 }
 
 RDAddress FunctionsModel::address(const QModelIndex& index) const {
-    const RDFunction* f = rd_slice_at(m_functions, index.row());
-    return rd_function_get_address(f);
+    return rd_slice_at(m_functions, index.row());
 }
 
 QVariant FunctionsModel::data(const QModelIndex& index, int role) const {
     if(role == Qt::DisplayRole) {
-        const RDFunction* f = rd_slice_at(m_functions, index.row());
-        RDAddress addr = rd_function_get_address(f);
+        RDAddress addr = rd_slice_at(m_functions, index.row());
 
         switch(index.column()) {
             case 0: return QString::fromUtf8(rd_to_hexaddr(m_context, addr));
