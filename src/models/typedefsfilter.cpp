@@ -15,9 +15,7 @@ bool TypedefsFilterModel::filterAcceptsRow(int source_row,
                                            const QModelIndex&) const {
     QModelIndex index = this->sourceModel()->index(source_row, 0);
     const RDTypeDef* tdef = this->typedefs_model()->type_def(index);
-
-    // always skip primitive types
-    if(rd_typedef_kind(tdef) == RD_TKIND_PRIM) return false;
+    if(rd_typedef_is_builtin(tdef)) return false;
 
     QString s = index.data().toString();
     return s.contains(this->filterRegularExpression());
