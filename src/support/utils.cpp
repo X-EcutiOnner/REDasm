@@ -86,6 +86,7 @@ QMenu* create_surface_menu(ISurface* surface) {
     QAction* act_undefine = actions::get(actions::DO_UNDEFINE);
     QAction* act_code = actions::get(actions::DO_CODE);
     QAction* act_data = actions::get(actions::DO_DATA);
+    QAction* act_create_function = actions::get(actions::CREATE_FUNCTION);
     QAction* act_patch = actions::get(actions::PATCH_INSTRUCTION);
 
     auto* menu = new QMenu(surface->to_widget());
@@ -99,7 +100,9 @@ QMenu* create_surface_menu(ISurface* surface) {
     menu->addAction(act_undefine);
     menu->addAction(act_code);
     menu->addAction(act_data);
+    menu->addSeparator();
     menu->addAction(act_patch);
+    menu->addAction(act_create_function);
     menu->addSeparator();
     menu->addAction(actions::get(actions::GOTO));
     menu->addSeparator();
@@ -120,6 +123,18 @@ QMenu* create_surface_menu(ISurface* surface) {
         actrefs->setVisible(cursor_addr.has_value() &&
                             !rd_slice_is_empty(rd_get_xrefs_to(
                                 surface->context(), *cursor_addr, RD_XR_NONE)));
+        RDFlags f;
+        bool flags_found = cursor_addr.has_value() &&
+                           rd_get_flags(surface->context(), *cursor_addr, &f);
+
+        if(flags_found) {
+            const RDSegment* seg =
+                rd_find_segment(surface->context(), *cursor_addr);
+            act_create_function->setVisible(seg && (seg->perm & RD_SP_X) &&
+                                            !rd_flags_has_func(f));
+        }
+        else
+            act_create_function->setVisible(false);
 
         auto celldata = surface->get_cell_data_under_cursor();
 
@@ -131,10 +146,9 @@ QMenu* create_surface_menu(ISurface* surface) {
         act_op_as_imm->setVisible(celldata && celldata->operand.index != -1 &&
                                   celldata->operand.value.kind == RD_OP_ADDR);
 
-        RDFlags f;
         auto curr_address = surface->get_current_address();
-        bool flags_found =
-            curr_address && rd_get_flags(surface->context(), *curr_address, &f);
+        flags_found = curr_address.has_value() &&
+                      rd_get_flags(surface->context(), *curr_address, &f);
 
         if(flags_found) {
             const RDSegment* seg =

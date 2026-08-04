@@ -444,6 +444,35 @@ void do_data() {
     dlgtypes->show();
 }
 
+void create_function() {
+    ContextView* cv = g_mainwindow->context_view();
+    if(!cv) return;
+
+    auto address = cv->surface()->get_address_under_cursor();
+    if(!address) return;
+
+    const RDSegment* seg = rd_find_segment(cv->context(), *address);
+    if(!seg || !(seg->perm & RD_SP_X)) return;
+
+    RDFlags f;
+    if(!rd_get_flags(cv->context(), *address, &f) || rd_flags_has_func(f))
+        return;
+
+    bool ok = false;
+    QString n = QInputDialog::getText(
+        g_mainwindow,
+        QString{"Create function @ %1"}.arg(utils::to_hex(*address)),
+        "Function name (can be empty):", QLineEdit::Normal, {}, &ok);
+
+    if(!ok) return;
+
+    if(rd_user_function(cv->context(), *address, qUtf8Printable(n)) &&
+       rd_reanalyze(cv->context())) {
+        cv->schedule_step();
+        cv->invalidate();
+    }
+}
+
 void patch_instruction() {
     ContextView* cv = g_mainwindow->context_view();
     if(!cv) return;
@@ -577,8 +606,13 @@ void init(QMainWindow* mw) {
     g_actions[Type::DO_DATA] = actions::add_detached_action(
         FA_ICON(0xf1b3), "Data", Qt::Key_D, mw, []() { actions::do_data(); });
 
+    g_actions[Type::CREATE_FUNCTION] = actions::add_detached_action(
+        FA_ICON(0x46), "Create function", Qt::Key_F, mw,
+        []() { actions::create_function(); });
+
     g_actions[Type::PATCH_INSTRUCTION] = actions::add_detached_action(
-        "Patch Instruction", QKeySequence{Qt::SHIFT | Qt::Key_Space}, mw,
+        FA_ICON(0xf462), "Patch Instruction",
+        QKeySequence{Qt::SHIFT | Qt::Key_Space}, mw,
         []() { actions::patch_instruction(); });
 
     g_actions[Type::REANALYZE] =

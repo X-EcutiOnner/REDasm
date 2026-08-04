@@ -19,6 +19,7 @@ enum Type : quint8 {
     DO_UNDEFINE,
     DO_CODE,
     DO_DATA,
+    CREATE_FUNCTION,
     PATCH_INSTRUCTION,
     REANALYZE,
 
