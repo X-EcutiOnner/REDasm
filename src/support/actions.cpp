@@ -120,7 +120,11 @@ void select_all() {
 
 void reanalyze() {
     ContextView* cv = g_mainwindow->context_view();
-    if(cv && rd_reanalyze(cv->context())) cv->schedule_step();
+
+    if(cv && rd_reanalyze(cv->context())) {
+        cv->schedule_step();
+        cv->invalidate();
+    }
 }
 
 void show_details() {
