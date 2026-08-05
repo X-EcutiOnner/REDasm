@@ -111,7 +111,7 @@ bool SurfaceGraph::go_back() {
 
     if(rd_surfacegraph_go_back(m_surface)) {
         const RDFunction* curr = rd_surfacegraph_get_function(m_surface);
-        m_functionchanged = (prev != curr);
+        m_functionchanged = !rd_function_is_same(prev, curr);
         this->invalidate();
         Q_EMIT history_updated();
         return true;
@@ -125,7 +125,7 @@ bool SurfaceGraph::go_forward() {
 
     if(rd_surfacegraph_go_forward(m_surface)) {
         const RDFunction* curr = rd_surfacegraph_get_function(m_surface);
-        m_functionchanged = (prev != curr);
+        m_functionchanged = !rd_function_is_same(prev, curr);
         this->invalidate();
         Q_EMIT history_updated();
         return true;
