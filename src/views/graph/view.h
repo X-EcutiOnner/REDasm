@@ -35,16 +35,16 @@ class GraphView: public QAbstractScrollArea {
 
 public:
     explicit GraphView(QWidget* parent = nullptr);
-    void set_graph(RDGraph* graph);
     void set_selected_node(const GraphViewNode* item);
     void set_focus_on_selection(bool b);
     void focus_root_block();
     GraphViewNode* selected_item() const;
-    RDGraph* graph() const;
+    virtual RDGraph* graph() const = 0;
 
 public Q_SLOTS:
     void focus_selected_block();
     void update_graph();
+    void reset_zoom();
 
 protected:
     GraphViewNode* node_from_pos(const QPointF& pt,
@@ -79,7 +79,7 @@ Q_SIGNALS:
     void selected_item_changed();
 
 protected:
-    RDGraph* m_graph{nullptr};
+    RDGraph* m_lastgraph{nullptr};
     QHash<RDGraphNode, GraphViewNode*> m_nodes;
 
 private:

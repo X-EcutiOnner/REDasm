@@ -17,15 +17,6 @@ GraphView::GraphView(QWidget* parent): QAbstractScrollArea(parent) {
     this->setPalette(palette);
 }
 
-void GraphView::set_graph(RDGraph* graph) {
-    m_selecteditem = nullptr;
-    m_scalefactor = m_scaleboost = 1.0;
-    m_graph = graph;
-    qDeleteAll(m_nodes);
-    m_nodes.clear();
-    this->update_graph();
-}
-
 void GraphView::set_selected_node(const GraphViewNode* item) {
     for(GraphViewNode* gvn : m_nodes) {
         if(gvn != item) continue;
@@ -37,7 +28,6 @@ void GraphView::set_selected_node(const GraphViewNode* item) {
 
 void GraphView::set_focus_on_selection(bool b) { m_focusonselection = b; }
 GraphViewNode* GraphView::selected_item() const { return m_selecteditem; }
-RDGraph* GraphView::graph() const { return m_graph; }
 
 void GraphView::focus_selected_block() {
     if(m_selecteditem) this->focus_block(m_selecteditem);
@@ -222,7 +212,8 @@ void GraphView::paintEvent(QPaintEvent*) {
     painter.save();
 
     for(auto& l : m_lines) {
-        QColor c(rd_graph_get_edge_color(m_graph, std::addressof(l.first)));
+        QColor c(
+            rd_graph_get_edge_color(this->graph(), std::addressof(l.first)));
         QPen pen(c);
 
         if(m_selecteditem && ((l.first.src == m_selecteditem->node()) ||
@@ -272,29 +263,41 @@ void GraphView::begin_compute() {}
 void GraphView::end_compute() {}
 
 void GraphView::compute_layout() {
-    rd_graph_compute_layered(m_graph, RD_LAYERED_LAYOUT_MEDIUM);
+    rd_graph_compute_layered(this->graph(), RD_LAYERED_LAYOUT_MEDIUM);
 }
 
 void GraphView::focus_root_block() {
-    if(!m_graph) return;
+    if(!this->graph()) return;
 
-    auto it = m_nodes.find(rd_graph_get_root(m_graph));
+    auto it = m_nodes.find(rd_graph_get_root(this->graph()));
     if(it != m_nodes.end()) this->focus_block(it.value());
 }
 
 void GraphView::update_graph() {
+    RDGraph* g = this->graph();
+
+    if(g != m_lastgraph) {
+        m_selecteditem = nullptr;
+
+        for(auto* item : m_nodes)
+            item->deleteLater();
+
+        m_nodes.clear();
+        m_lastgraph = g;
+    }
+
     m_lines.clear();
     m_arrows.clear();
 
-    if(!m_graph) {
+    if(!g) {
         this->viewport()->update();
         return;
     }
 
-    rd_graph_clear_layout(m_graph);
+    rd_graph_clear_layout(g);
     this->begin_compute();
 
-    RDNodeSlice nodes = rd_graph_get_nodes(m_graph);
+    RDNodeSlice nodes = rd_graph_get_nodes(g);
     QSet<RDGraphNode> nids;
 
     const RDGraphNode* n;
@@ -302,7 +305,7 @@ void GraphView::update_graph() {
         GraphViewNode* item = nullptr;
 
         if(!m_nodes.contains(*n)) {
-            item = this->create_node(*n, m_graph);
+            item = this->create_node(*n, g);
             if(!item) continue;
 
             connect(item, &GraphViewNode::invalidated, this->viewport(),
@@ -316,8 +319,8 @@ void GraphView::update_graph() {
 
         this->update_node(item);
         nids.insert(*n);
-        rd_graph_set_node_width(m_graph, item->node(), item->width());
-        rd_graph_set_node_height(m_graph, item->node(), item->height());
+        rd_graph_set_node_width(g, item->node(), item->width());
+        rd_graph_set_node_height(g, item->node(), item->height());
     }
 
     // Remove orphan nodes
@@ -330,7 +333,7 @@ void GraphView::update_graph() {
             it++;
     }
 
-    RDEdgeSlice edges = rd_graph_get_edges(m_graph);
+    RDEdgeSlice edges = rd_graph_get_edges(g);
 
     const RDGraphEdge* e;
     rd_slice_each(e, edges) { this->update_edge(*e); }
@@ -338,8 +341,8 @@ void GraphView::update_graph() {
     this->compute_layout();
 
     rd_slice_each(n, nodes) {
-        m_nodes[*n]->move(QPoint(rd_graph_get_node_x(m_graph, *n),
-                                 rd_graph_get_node_y(m_graph, *n)));
+        m_nodes[*n]->move(
+            QPoint(rd_graph_get_node_x(g, *n), rd_graph_get_node_y(g, *n)));
     }
 
     rd_slice_each(e, edges) {
@@ -364,6 +367,8 @@ void GraphView::update_graph() {
     this->viewport()->update();
     this->end_compute();
 }
+
+void GraphView::reset_zoom() { m_scalefactor = m_scaleboost = 1.0; }
 
 GraphViewNode* GraphView::node_from_pos(const QPointF& pt,
                                         QPoint* itempos) const {
@@ -416,11 +421,14 @@ void GraphView::adjust_size(int vpw, int vph, const QPointF& cursorpos,
                             bool fit) {
     // bugfix - resize event (during several initial calls) may reset correct
     // adjustment already made
-    if(!m_graph || (vph < 30)) return;
+
+    RDGraph* g = this->graph();
+
+    if(!g || (vph < 30)) return;
 
     m_rendersize = QSize{
-        static_cast<int>(rd_graph_get_area_width(m_graph) * m_scalefactor),
-        static_cast<int>(rd_graph_get_area_height(m_graph) * m_scalefactor),
+        static_cast<int>(rd_graph_get_area_width(g) * m_scalefactor),
+        static_cast<int>(rd_graph_get_area_height(g) * m_scalefactor),
     };
 
     m_renderoffset = QPoint(vpw, vph);
@@ -472,7 +480,7 @@ void GraphView::adjust_size(int vpw, int vph, const QPointF& cursorpos,
 }
 
 void GraphView::precompute_arrow(const RDGraphEdge& e) {
-    RDGraphPointSlice path = rd_graph_get_edge_arrow(m_graph, &e);
+    RDGraphPointSlice path = rd_graph_get_edge_arrow(this->graph(), &e);
     QPolygon arrowhead;
 
     const RDGraphPoint* p;
@@ -482,7 +490,7 @@ void GraphView::precompute_arrow(const RDGraphEdge& e) {
 }
 
 void GraphView::precompute_line(const RDGraphEdge& e) {
-    RDGraphPointSlice path = rd_graph_get_edge_routes(m_graph, &e);
+    RDGraphPointSlice path = rd_graph_get_edge_routes(this->graph(), &e);
     usize c = rd_slice_length(path);
     QVector<QLine> lines;
 

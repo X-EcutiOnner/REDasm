@@ -37,6 +37,10 @@ RDRenderMode SurfaceGraph::get_mode() const {
     return rd_surfacegraph_get_mode(m_surface);
 }
 
+RDGraph* SurfaceGraph::graph() const {
+    return rd_surfacegraph_get_graph(m_surface);
+}
+
 void SurfaceGraph::jump_to_ep() {
     RDAddress ep;
     if(rd_get_entry_point(m_context, &ep)) return;
@@ -46,8 +50,7 @@ void SurfaceGraph::jump_to_ep() {
     if(!rd_surfacegraph_jump_to(m_surface, ep)) {
         const RDFunction* curr = rd_surfacegraph_get_function(m_surface);
         m_functionchanged = (prev != curr);
-
-        this->set_graph(rd_surfacegraph_get_graph(m_surface));
+        this->invalidate();
         this->clear_history();
         Q_EMIT history_updated();
     }
@@ -59,8 +62,7 @@ void SurfaceGraph::jump_to(RDAddress address) {
     if(rd_surfacegraph_jump_to(m_surface, address)) {
         const RDFunction* curr = rd_surfacegraph_get_function(m_surface);
         m_functionchanged = (prev != curr);
-
-        this->set_graph(rd_surfacegraph_get_graph(m_surface));
+        this->invalidate();
         Q_EMIT history_updated();
     }
 }
@@ -110,12 +112,7 @@ bool SurfaceGraph::go_back() {
     if(rd_surfacegraph_go_back(m_surface)) {
         const RDFunction* curr = rd_surfacegraph_get_function(m_surface);
         m_functionchanged = (prev != curr);
-
-        if(m_functionchanged)
-            this->set_graph(rd_surfacegraph_get_graph(m_surface));
-        else
-            this->viewport()->update();
-
+        this->invalidate();
         Q_EMIT history_updated();
         return true;
     }
@@ -129,12 +126,7 @@ bool SurfaceGraph::go_forward() {
     if(rd_surfacegraph_go_forward(m_surface)) {
         const RDFunction* curr = rd_surfacegraph_get_function(m_surface);
         m_functionchanged = (prev != curr);
-
-        if(m_functionchanged)
-            this->set_graph(rd_surfacegraph_get_graph(m_surface));
-        else
-            this->viewport()->update();
-
+        this->invalidate();
         Q_EMIT history_updated();
         return true;
     }
@@ -152,6 +144,10 @@ void SurfaceGraph::compute_layout() {
 
     RDGraph* g = rd_surfacegraph_get_graph(m_surface);
     if(g) rd_graph_compute_layered(g, RD_LAYERED_LAYOUT_MEDIUM);
+}
+
+void SurfaceGraph::begin_compute() {
+    if(m_functionchanged) this->reset_zoom();
 }
 
 void SurfaceGraph::end_compute() {

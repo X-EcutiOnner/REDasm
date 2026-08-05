@@ -27,6 +27,7 @@ public:
     [[nodiscard]] bool can_go_forward() const override;
     [[nodiscard]] bool has_selection() const override;
     [[nodiscard]] RDRenderMode get_mode() const override;
+    RDGraph* graph() const override;
     void jump_to_ep() override;
     void jump_to(RDAddress address) override;
     bool invalidate() override;
@@ -44,6 +45,7 @@ public Q_SLOTS:
 protected:
     GraphViewNode* create_node(RDGraphNode n, const RDGraph* g) override;
     void compute_layout() override;
+    void begin_compute() override;
     void end_compute() override;
     void update_node(GraphViewNode*) override;
     void keyPressEvent(QKeyEvent* e) override;
