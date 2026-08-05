@@ -32,7 +32,7 @@ struct PatchDialog {
         vbox->addWidget(this->chbxfillnop);
         vbox->addWidget(this->buttonbox);
 
-        self->resize(300, self->minimumHeight());
+        self->adjustSize();
     }
 };
 
