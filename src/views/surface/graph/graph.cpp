@@ -38,13 +38,17 @@ RDRenderMode SurfaceGraph::get_mode() const {
 }
 
 void SurfaceGraph::jump_to_ep() {
+    RDAddress ep;
+    if(rd_get_entry_point(m_context, &ep)) return;
+
     const RDFunction* prev = rd_surfacegraph_get_function(m_surface);
 
-    if(rd_surfacegraph_jump_to_ep(m_surface)) {
+    if(!rd_surfacegraph_jump_to(m_surface, ep)) {
         const RDFunction* curr = rd_surfacegraph_get_function(m_surface);
         m_functionchanged = (prev != curr);
 
         this->set_graph(rd_surfacegraph_get_graph(m_surface));
+        this->clear_history();
         Q_EMIT history_updated();
     }
 }
