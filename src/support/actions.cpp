@@ -470,8 +470,12 @@ void create_function() {
 
     if(!ok) return;
 
-    if(rd_user_function(cv->context(), *address, qUtf8Printable(n)) &&
+    if(rd_set_function(cv->context(), *address) &&
        rd_reanalyze(cv->context())) {
+
+        if(!n.isEmpty())
+            rd_user_name(cv->context(), *address, qUtf8Printable(n));
+
         cv->schedule_step();
         cv->invalidate();
     }
