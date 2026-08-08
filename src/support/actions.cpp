@@ -310,7 +310,7 @@ void refs_to() {
     if(!address) return;
 
     if(!rd_has_refs_to(cv->context(), *address)) {
-        RD_LOG_INFO("no xrefs to %" PRIx64, *address);
+        RD_LOG_INFO("no xrefs to %" PRIX64, *address);
         return;
     }
 
