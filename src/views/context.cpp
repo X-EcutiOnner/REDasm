@@ -81,7 +81,6 @@ void ContextView::schedule_step() {
 }
 
 void ContextView::check_status() {
-    m_functionsmodel->resync();
     m_ui.splitview->surface()->invalidate();
 
     if(!m_status.is_busy) {
@@ -108,7 +107,6 @@ void ContextView::check_status() {
     }
 }
 
-void ContextView::invalidate() {
-    m_functionsmodel->resync();
+void ContextView::invalidate() { // NOLINT
     this->surface()->invalidate();
 }

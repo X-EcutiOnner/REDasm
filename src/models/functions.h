@@ -9,7 +9,6 @@ class FunctionsModel: public QAbstractListModel {
 public:
     explicit FunctionsModel(RDContext* ctx, QObject* parent = nullptr);
     [[nodiscard]] RDAddress address(const QModelIndex& index) const;
-    void resync();
 
 public:
     [[nodiscard]] QVariant data(const QModelIndex& index,
@@ -20,6 +19,8 @@ public:
     [[nodiscard]] int rowCount(const QModelIndex&) const override;
 
 private:
+    static void on_hook(RDContext* ctx, const RDHookEvent* e, void* userdata);
+
+private:
     RDContext* m_context;
-    RDAddressSlice m_functions;
 };
